@@ -1,312 +1,339 @@
 "use client";
 
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
-import { Reveal } from "./reveal";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Reveal } from "./reveal";
+import { Counter } from "./counter";
+
+export { Reveal };
 
 /* ================================================================== */
-/*  Editorial kit — shared design primitives for the whole site.      */
-/*  Language: paper #F3EFE4 · ink #1A1512 · structural red #E31E24    */
-/*  Sharp corners · 1px rules · numbered sections · index rows        */
+/*  Quiet Studio — shared primitives for every page                    */
+/*  One warm paper canvas, soft ink, a single red accent.             */
 /* ================================================================== */
 
-/* ---- Page shell: centered column with visible side rules ---------- */
-export function Shell({
+/* ------------------------------------------------------------------ */
+/*  Layout                                                             */
+/* ------------------------------------------------------------------ */
+
+export function Container({
   children,
   className,
-  wide = false,
 }: {
   children: ReactNode;
   className?: string;
-  wide?: boolean;
 }) {
   return (
-    <div
-      className={cn(
-        "mx-auto w-full border-x border-ink/15",
-        wide ? "max-w-[1400px]" : "max-w-[1200px]",
-        className
-      )}
-    >
+    <div className={cn("mx-auto w-full max-w-[1080px] px-5 sm:px-8", className)}>
       {children}
     </div>
   );
 }
 
-/* ---- Kicker: small-caps mono-feel label with square bullet -------- */
-export function Kicker({
+/* ------------------------------------------------------------------ */
+/*  Type pieces                                                        */
+/* ------------------------------------------------------------------ */
+
+export function Eyebrow({
   children,
-  className,
   tone = "ink",
+  className,
 }: {
   children: ReactNode;
+  tone?: "ink" | "paper";
   className?: string;
-  tone?: "ink" | "paper" | "brand";
 }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[0.22em]",
-        tone === "ink" && "text-ink-soft",
-        tone === "paper" && "text-paper/70",
-        tone === "brand" && "text-brand",
+        "inline-flex items-center gap-2.5 text-[11px] font-semibold uppercase tracking-[0.22em]",
+        tone === "ink" ? "text-ink-soft" : "text-paper/60",
         className
       )}
     >
       <span
         aria-hidden
-        className={cn(
-          "inline-block h-[7px] w-[7px]",
-          tone === "brand" ? "bg-brand" : "bg-current"
-        )}
+        className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
       />
       {children}
     </span>
   );
 }
 
-/* ---- SectionHead: numbered prospectus section header -------------- */
 export function SectionHead({
-  no,
-  bn,
-  en,
+  eyebrow,
   title,
   lede,
-  className,
+  align = "left",
   tone = "ink",
+  className,
 }: {
-  no: string; // e.g. "01"
-  bn?: string; // Bengali eyebrow
-  en?: string; // English eyebrow (fallback)
+  eyebrow: string;
   title: ReactNode;
-  lede?: ReactNode;
-  className?: string;
+  lede?: string;
+  align?: "left" | "center";
   tone?: "ink" | "paper";
+  className?: string;
 }) {
-  const paper = tone === "paper";
   return (
-    <div className={cn("border-t-2 pt-5", paper ? "border-paper/80" : "border-ink", className)}>
-      <Reveal>
-        <div
-          className={cn(
-            "flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1",
-            paper ? "text-paper/70" : "text-ink-soft"
-          )}
-        >
-          <span className="font-display text-sm font-semibold tracking-[0.18em]">
-            {bn ? (
-              <span className="font-bn-serif text-[13px] font-medium">{bn}</span>
-            ) : null}
-            {bn && en ? <span className="mx-2 text-ink-faint">/</span> : null}
-            {en}
-          </span>
-          <span
-            className={cn(
-              "font-display text-xs font-bold tracking-[0.3em]",
-              paper ? "text-paper" : "text-ink"
-            )}
-          >
-            § {no}
-          </span>
-        </div>
-      </Reveal>
-      <Reveal delay={0.06}>
-        <h2
-          className={cn(
-            "font-display mt-4 text-balance text-3xl font-semibold leading-[1.05] tracking-tight sm:text-4xl lg:text-[2.9rem]",
-            paper ? "text-paper" : "text-ink"
-          )}
-        >
-          {title}
-        </h2>
-      </Reveal>
+    <div
+      className={cn(
+        "max-w-2xl",
+        align === "center" && "mx-auto text-center",
+        className
+      )}
+    >
+      <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
+      <h2
+        className={cn(
+          "font-display mt-5 text-balance text-3xl font-medium leading-[1.08] tracking-[-0.01em] sm:text-4xl md:text-[2.75rem]",
+          tone === "ink" ? "text-ink" : "text-paper"
+        )}
+      >
+        {title}
+      </h2>
       {lede ? (
-        <Reveal delay={0.12}>
-          <p
-            className={cn(
-              "mt-4 max-w-2xl text-[15px] leading-relaxed",
-              paper ? "text-paper/70" : "text-ink-soft"
-            )}
-          >
-            {lede}
-          </p>
-        </Reveal>
+        <p
+          className={cn(
+            "mt-5 text-base leading-relaxed sm:text-lg",
+            tone === "ink" ? "text-ink-soft" : "text-paper/60"
+          )}
+        >
+          {lede}
+        </p>
       ) : null}
     </div>
   );
 }
 
-/* ---- Btn: sharp editorial button ---------------------------------- */
+/* ------------------------------------------------------------------ */
+/*  Buttons & links                                                    */
+/* ------------------------------------------------------------------ */
+
+type BtnVariant =
+  | "solid"
+  | "brand"
+  | "outline"
+  | "paper"
+  | "outline-paper";
+
+const btnVariants: Record<BtnVariant, string> = {
+  solid:
+    "bg-ink text-paper hover:bg-brand focus-visible:outline-brand",
+  brand:
+    "bg-brand text-paper hover:bg-brand-deep focus-visible:outline-brand",
+  outline:
+    "border border-hairline bg-transparent text-ink hover:border-ink hover:bg-sand/60",
+  paper:
+    "bg-paper text-ink hover:bg-sand focus-visible:outline-paper",
+  "outline-paper":
+    "border border-paper/30 bg-transparent text-paper hover:border-paper/80 hover:bg-paper/5",
+};
+
+const btnSizes = {
+  sm: "px-5 py-2.5 text-[13px]",
+  md: "px-6 py-3 text-sm",
+  lg: "px-7 py-3.5 text-[15px]",
+};
+
+interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: BtnVariant;
+  size?: keyof typeof btnSizes;
+  href?: string;
+  external?: boolean;
+}
+
 export function Btn({
-  children,
-  onClick,
-  href,
   variant = "solid",
   size = "md",
+  href,
+  external = false,
   className,
-  arrow = true,
-  external,
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-  href?: string;
-  variant?: "solid" | "outline" | "paper" | "ghost-paper";
-  size?: "sm" | "md" | "lg";
-  className?: string;
-  arrow?: boolean;
-  external?: boolean;
-}) {
-  const styles = cn(
-    "group/btn inline-flex cursor-pointer items-center justify-center gap-3 font-sans font-bold uppercase tracking-[0.14em] transition-colors duration-200 select-none",
-    size === "sm" && "px-4 py-2.5 text-[11px]",
-    size === "md" && "px-6 py-3.5 text-xs",
-    size === "lg" && "px-8 py-4 text-[13px]",
-    variant === "solid" &&
-      "bg-brand text-paper shadow-[4px_4px_0_0_#1a1512] hover:bg-ink hover:shadow-[4px_4px_0_0_#e31e24]",
-    variant === "outline" &&
-      "border-2 border-ink bg-transparent text-ink hover:bg-ink hover:text-paper",
-    variant === "paper" &&
-      "border-2 border-paper bg-paper text-ink hover:bg-brand hover:border-brand hover:text-paper",
-    variant === "ghost-paper" &&
-      "border-2 border-paper/40 bg-transparent text-paper hover:border-paper hover:bg-paper hover:text-ink",
+  children,
+  ...rest
+}: BtnProps) {
+  const cls = cn(
+    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-full font-medium tracking-[0.01em] transition-all duration-300 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50",
+    btnVariants[variant],
+    btnSizes[size],
     className
   );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        className={cls}
+        {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <button className={cls} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+export function ArrowLink({
+  label,
+  href,
+  onClick,
+  tone = "ink",
+  className,
+}: {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  tone?: "ink" | "paper";
+  className?: string;
+}) {
   const inner = (
     <>
-      {children}
-      {arrow ? (
-        variant === "solid" ? (
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
-        ) : (
-          <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
-        )
-      ) : null}
+      <span className="link-underline">{label}</span>
+      <ArrowRight
+        aria-hidden
+        className="h-4 w-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+      />
     </>
   );
+  const cls = cn(
+    "group inline-flex cursor-pointer items-center gap-2 text-sm font-medium",
+    tone === "ink" ? "text-ink" : "text-paper",
+    className
+  );
   if (href) {
-    return external ? (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={styles}>
-        {inner}
-      </a>
-    ) : (
-      <a href={href} className={styles}>
+    return (
+      <a
+        href={href}
+        className={cls}
+        {...(href.startsWith("http")
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
+      >
         {inner}
       </a>
     );
   }
   return (
-    <button type="button" onClick={onClick} className={styles}>
+    <button type="button" onClick={onClick} className={cls}>
       {inner}
     </button>
   );
 }
 
-/* ---- IndexRow: full-width hover-invert list row -------------------- */
-export function IndexRow({
-  no,
-  title,
-  meta,
-  right,
-  onClick,
-  className,
-}: {
-  no: string;
-  title: ReactNode;
-  meta?: ReactNode;
-  right?: ReactNode;
-  onClick?: () => void;
-  className?: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        "group/row grid w-full cursor-pointer grid-cols-[auto_1fr_auto] items-center gap-x-4 border-t border-ink/15 py-5 text-left transition-colors duration-200 hover:bg-ink sm:gap-x-6 sm:py-6",
-        className
-      )}
-    >
-      <span className="font-display w-8 text-sm font-bold tracking-wider text-brand sm:w-12 sm:text-base">
-        {no}
-      </span>
-      <span className="min-w-0">
-        <span className="font-display block truncate text-lg font-semibold leading-tight text-ink transition-colors group-hover/row:text-paper sm:text-2xl">
-          {title}
-        </span>
-        {meta ? (
-          <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-faint transition-colors group-hover/row:text-paper/60">
-            {meta}
-          </span>
-        ) : null}
-      </span>
-      <span className="flex items-center gap-3 text-ink-faint transition-colors group-hover/row:text-paper">
-        {right}
-        <ArrowUpRight className="h-5 w-5 transition-transform duration-200 group-hover/row:translate-x-1 group-hover/row:-translate-y-1 sm:h-6 sm:w-6" />
-      </span>
-    </button>
-  );
-}
+/* ------------------------------------------------------------------ */
+/*  Media                                                              */
+/* ------------------------------------------------------------------ */
 
-/* ---- Frame: printed photo frame with caption bar ------------------- */
-export function Frame({
+export function Figure({
   src,
   alt,
+  ratio = "aspect-[4/3]",
   caption,
-  ratio = "4/3",
   className,
-  priority,
-  sizes = "(max-width: 768px) 100vw, 50vw",
+  imgClassName,
 }: {
   src: string;
   alt: string;
-  caption?: string;
   ratio?: string;
+  caption?: string;
   className?: string;
-  priority?: boolean;
-  sizes?: string;
+  imgClassName?: string;
 }) {
   return (
-    <figure className={cn("bg-card border border-ink/20", className)}>
-      <div className="relative overflow-hidden" style={{ aspectRatio: ratio }}>
+    <figure className={cn("min-w-0", className)}>
+      <div className={cn("overflow-hidden rounded-2xl bg-sand", ratio)}>
         { }
         <img
           src={src}
           alt={alt}
-          loading={priority ? "eager" : "lazy"}
-          className="img-print h-full w-full object-cover"
+          loading="lazy"
+          className={cn(
+            "img-soft h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.03]",
+            imgClassName
+          )}
         />
       </div>
       {caption ? (
-        <figcaption className="flex items-center justify-between gap-3 border-t border-ink/20 bg-paper-deep/60 px-3 py-2 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-soft">
-          <span className="truncate">{caption}</span>
-          <span aria-hidden className="text-brand">
-            ■
-          </span>
+        <figcaption className="mt-3 text-xs tracking-[0.04em] text-ink-faint">
+          {caption}
         </figcaption>
       ) : null}
     </figure>
   );
 }
 
-/* ---- Stamp: rotated rubber stamp ----------------------------------- */
-export function Stamp({
-  children,
+/* ------------------------------------------------------------------ */
+/*  Numbers                                                            */
+/* ------------------------------------------------------------------ */
+
+export function Stat({
+  value,
+  suffix,
+  label,
+  tone = "ink",
   className,
-  tone = "brand",
+}: {
+  value: number | string;
+  suffix?: string;
+  label: string;
+  tone?: "ink" | "paper";
+  className?: string;
+}) {
+  return (
+    <div className={cn("min-w-0", className)}>
+      <div
+        className={cn(
+          "font-display text-4xl font-medium leading-none tracking-[-0.01em] sm:text-[2.75rem]",
+          tone === "ink" ? "text-ink" : "text-paper"
+        )}
+      >
+        {typeof value === "number" ? (
+          <Counter value={value} suffix={suffix ?? ""} />
+        ) : (
+          <>
+            {value}
+            {suffix}
+          </>
+        )}
+      </div>
+      <div
+        className={cn(
+          "mt-3 text-[11px] font-medium uppercase tracking-[0.18em]",
+          tone === "ink" ? "text-ink-faint" : "text-paper/50"
+        )}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Chips                                                             */
+/* ------------------------------------------------------------------ */
+
+export function Chip({
+  children,
+  tone = "ink",
+  className,
 }: {
   children: ReactNode;
+  tone?: "ink" | "paper" | "brand";
   className?: string;
-  tone?: "brand" | "paper" | "ink";
 }) {
   return (
     <span
       className={cn(
-        "stamp text-xs",
-        tone === "brand" && "text-brand",
-        tone === "paper" && "text-paper",
-        tone === "ink" && "text-ink",
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-medium tracking-[0.06em]",
+        tone === "ink" && "border-hairline bg-card text-ink-soft",
+        tone === "paper" && "border-paper/25 bg-transparent text-paper/70",
+        tone === "brand" && "border-brand/20 bg-brand-tint text-brand-deep",
         className
       )}
     >
@@ -315,163 +342,132 @@ export function Stamp({
   );
 }
 
-/* ---- Marquee: red ticker strip ------------------------------------- */
-export function Ticker({
-  items,
-  slow = false,
-  className,
-}: {
-  items: ReactNode[];
-  slow?: boolean;
-  className?: string;
-}) {
-  const row = (key: string) => (
-    <div key={key} className="flex shrink-0 items-center" aria-hidden={key === "b"}>
-      {items.map((it, i) => (
-        <span key={i} className="flex items-center whitespace-nowrap">
-          <span className="px-6 text-[13px] font-bold uppercase tracking-[0.2em]">{it}</span>
-          <span aria-hidden className="text-[10px] opacity-70">
-            ✦
-          </span>
-        </span>
-      ))}
-    </div>
-  );
-  return (
-    <div
-      className={cn(
-        "relative flex overflow-hidden border-y-2 border-ink bg-brand py-3 text-paper select-none",
-        className
-      )}
-    >
-      <div className={cn("flex", slow ? "animate-marquee-slow" : "animate-marquee")}>
-        {row("a")}
-        {row("b")}
-      </div>
-    </div>
-  );
-}
+/* ------------------------------------------------------------------ */
+/*  Page header — quiet inner-page hero                                */
+/* ------------------------------------------------------------------ */
 
-/* ---- StatBlock: oversized ledger figure ----------------------------- */
-export function StatBlock({
-  value,
-  label,
-  sub,
-  className,
-}: {
-  value: ReactNode;
-  label: string;
-  sub?: string;
-  className?: string;
-}) {
-  return (
-    <div className={cn("px-5 py-8 sm:px-8 sm:py-10", className)}>
-      <div className="font-display text-4xl font-semibold leading-none tracking-tight text-brand sm:text-5xl lg:text-6xl">
-        {value}
-      </div>
-      <div className="mt-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ink">
-        {label}
-      </div>
-      {sub ? <div className="mt-1 text-xs text-ink-faint">{sub}</div> : null}
-    </div>
-  );
-}
-
-/* ---- RuleRow: label/value ledger line ------------------------------- */
-export function RuleRow({
-  label,
-  value,
-  className,
-}: {
-  label: ReactNode;
-  value: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex flex-wrap items-baseline justify-between gap-x-8 gap-y-1 border-b border-dashed border-ink/25 py-3",
-        className
-      )}
-    >
-      <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink-faint">
-        {label}
-      </span>
-      <span className="text-right text-sm font-semibold text-ink">{value}</span>
-    </div>
-  );
-}
-
-/* ---- PageHead: big editorial page title block ------------------------ */
 export function PageHead({
-  no,
-  bn,
+  eyebrow,
   title,
   lede,
   meta,
+  children,
 }: {
-  no: string;
-  bn: string;
+  eyebrow: string;
   title: ReactNode;
-  lede?: ReactNode;
+  lede?: string;
   meta?: { label: string; value: string }[];
+  children?: ReactNode;
 }) {
   return (
-    <header className="relative border-b-2 border-ink bg-paper">
-      <div className="bg-ledger pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto max-w-[1200px] border-x border-ink/15 px-4 py-14 sm:px-6 sm:py-20">
+    <header className="border-b border-hairline">
+      <Container className="pb-14 pt-16 sm:pb-16 sm:pt-20 md:pb-20 md:pt-28">
         <Reveal>
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-            <Kicker>
-              <span className="font-bn-serif text-[13px] font-medium normal-case tracking-[0.08em]">
-                {bn}
-              </span>
-            </Kicker>
-            <span className="font-display text-xs font-bold tracking-[0.3em] text-ink-soft">
-              § {no}
-            </span>
-          </div>
+          <Eyebrow>{eyebrow}</Eyebrow>
         </Reveal>
-        <Reveal delay={0.07}>
-          <h1 className="font-display mt-5 max-w-4xl text-balance text-4xl font-semibold leading-[1.02] tracking-tight text-ink sm:text-5xl lg:text-7xl">
+        <Reveal delay={0.08}>
+          <h1 className="font-display mt-6 max-w-3xl text-balance text-4xl font-medium leading-[1.04] tracking-[-0.015em] text-ink sm:text-5xl md:text-6xl">
             {title}
           </h1>
         </Reveal>
         {lede ? (
           <Reveal delay={0.14}>
-            <p className="mt-6 max-w-2xl text-[15px] leading-relaxed text-ink-soft sm:text-base">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-ink-soft sm:text-lg">
               {lede}
             </p>
           </Reveal>
         ) : null}
         {meta && meta.length > 0 ? (
           <Reveal delay={0.2}>
-            <dl className="mt-10 grid grid-cols-2 border-t border-ink/20 sm:grid-cols-4">
+            <dl className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               {meta.map((m, i) => (
                 <div
                   key={m.label}
                   className={cn(
-                    "border-ink/20 py-4 pr-4",
-                    i !== 0 && "sm:border-l sm:pl-5",
-                    i === 2 && "border-t sm:border-t-0",
-                    i === 3 && "border-t sm:border-t-0 sm:border-l sm:pl-5"
+                    "flex flex-col gap-1",
+                    i > 0 && "border-l border-hairline pl-8"
                   )}
                 >
-                  <dt className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-faint">
+                  <dt className="text-[10px] font-semibold uppercase tracking-[0.2em] text-ink-faint">
                     {m.label}
                   </dt>
-                  <dd className="font-display mt-1.5 text-base font-semibold text-ink">
-                    {m.value}
-                  </dd>
+                  <dd className="text-sm font-medium text-ink">{m.value}</dd>
                 </div>
               ))}
             </dl>
           </Reveal>
         ) : null}
-      </div>
+        {children}
+      </Container>
     </header>
   );
 }
 
-/* re-export for convenience */
-export { Reveal };
+/* ------------------------------------------------------------------ */
+/*  Closing CTA panel — one calm ink moment per page                   */
+/* ------------------------------------------------------------------ */
+
+export function CtaPanel({
+  eyebrow,
+  title,
+  lede,
+  bn,
+  primary,
+  secondary,
+}: {
+  eyebrow: string;
+  title: ReactNode;
+  lede?: string;
+  bn?: string;
+  primary: { label: string; onClick?: () => void; href?: string };
+  secondary?: { label: string; onClick?: () => void; href?: string };
+}) {
+  return (
+    <section className="pb-20 pt-4 sm:pb-24">
+      <Container>
+        <Reveal>
+          <div className="relative overflow-hidden rounded-[2rem] bg-ink px-7 py-14 text-paper sm:px-12 sm:py-16 md:px-16 md:py-20">
+            {/* one quiet red dot, top right */}
+            <span
+              aria-hidden
+              className="absolute right-10 top-10 hidden h-2 w-2 rounded-full bg-brand md:block"
+            />
+            <div className="max-w-xl">
+              <Eyebrow tone="paper">{eyebrow}</Eyebrow>
+              <h2 className="font-display mt-5 text-balance text-3xl font-medium leading-[1.08] tracking-[-0.01em] sm:text-4xl">
+                {title}
+              </h2>
+              {lede ? (
+                <p className="mt-5 text-base leading-relaxed text-paper/60">
+                  {lede}
+                </p>
+              ) : null}
+              {bn ? (
+                <p className="font-bengali mt-4 text-sm text-paper/40">{bn}</p>
+              ) : null}
+            </div>
+            <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+              <Btn
+                variant="paper"
+                size="lg"
+                href={primary.href}
+                onClick={primary.onClick}
+              >
+                {primary.label}
+                <ArrowRight className="h-4 w-4" />
+              </Btn>
+              {secondary ? (
+                <ArrowLink
+                  label={secondary.label}
+                  href={secondary.href}
+                  onClick={secondary.onClick}
+                  tone="paper"
+                />
+              ) : null}
+            </div>
+          </div>
+        </Reveal>
+      </Container>
+    </section>
+  );
+}

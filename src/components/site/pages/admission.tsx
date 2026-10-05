@@ -1,33 +1,39 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { useForm, type UseFormReturn } from "react-hook-form";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { ArrowRight, Loader2 } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Clock,
+  Loader2,
+  Mail,
+  MapPin,
+  Phone,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Btn,
-  Kicker,
+  Container,
+  Eyebrow,
   PageHead,
   Reveal,
-  RuleRow,
   SectionHead,
-  Shell,
-  Stamp,
 } from "../kit";
 import { BRAND, COURSES, type PageId } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
 /* ================================================================== */
-/*  ADMISSION — the official application form                           */
+/*  ADMISSION — the application form                                   */
 /* ================================================================== */
 
 const formSchema = z.object({
   name: z
     .string()
     .min(2, "Two letters minimum — we need something to call you")
-    .max(80, "That name is too long for the ledger"),
+    .max(80, "That name is too long"),
   phone: z
     .string()
     .min(6, "We call this number — please check it")
@@ -36,11 +42,7 @@ const formSchema = z.object({
   course: z.string().min(1, "Pick a course — or choose 'not sure'"),
   level: z.string().min(1, "Pick the closest — honesty helps"),
   mode: z.string().min(1, "Offline or online?"),
-  message: z
-    .string()
-    .max(600, "Please keep it under 600 characters")
-    .optional()
-    .or(z.literal("")),
+  message: z.string().max(600, "Please keep it under 600 characters").optional().or(z.literal("")),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -68,51 +70,26 @@ const MODES = [
 
 const NEXT_STEPS = [
   {
+    no: "01",
     title: "The call — within 24 hours",
     copy: `Keep your phone on. The desk calls from ${BRAND.phone}.`,
   },
   {
+    no: "02",
     title: "Free demo class + diagnostic",
     copy: "We book you into a live batch and a full mock test — both free, both yours.",
   },
   {
+    no: "03",
     title: "Enroll only if it fits",
     copy: "If the plan makes sense, you join. If it doesn't, you keep the diagnosis and the roadmap.",
   },
 ];
 
-const PROCESS_STEPS = [
-  {
-    no: "01",
-    title: "The call",
-    tag: "Within 24 hours",
-    copy: "A person — not a recording — calls from the admission desk. Fifteen minutes on your goal, your deadline, and where your English honestly stands.",
-  },
-  {
-    no: "02",
-    title: "Free demo class",
-    tag: "No fee, no deposit",
-    copy: "You sit in a real batch and watch how we teach. Bring your doubts; leave them there. If the teaching doesn't land, nobody chases you.",
-  },
-  {
-    no: "03",
-    title: "Diagnostic mock",
-    tag: "Yours to keep either way",
-    copy: "A full-length diagnostic under exam conditions, checked against band descriptors. You leave with an estimated band and a written plan.",
-  },
-];
-
 const inputCls =
-  "h-[52px] w-full border-2 border-ink bg-paper px-4 text-[15px] font-medium text-ink transition-colors placeholder:font-normal placeholder:text-ink-faint/80 focus:border-brand focus:outline-none";
+  "h-12 w-full rounded-xl border border-hairline bg-paper px-4 text-sm font-medium text-ink transition-colors placeholder:font-normal placeholder:text-ink-faint/70 focus:border-ink focus:outline-none";
 
-/* Ruled application-sheet paper — same ledger ruling as PageHead, a touch darker */
-const ruledPaper: CSSProperties = {
-  backgroundImage:
-    "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(26,21,18,0.075) 31px, rgba(26,21,18,0.075) 32px)",
-};
-
-const paperRuleCls =
-  "border-paper/25 [&>span:first-child]:text-paper/50 [&>span:last-child]:text-paper";
+/* ------------------------------------------------------------------ */
 
 export function AdmissionPage({
   preselectedCourse,
@@ -138,14 +115,14 @@ export function AdmissionPage({
     },
   });
 
-  // Arriving from a course page's "Enroll" button pre-fills the course
+  // arriving from a course page's "Enroll" button pre-fills the course
   useEffect(() => {
     if (preselectedCourse) {
       form.setValue("course", preselectedCourse);
     }
   }, [preselectedCourse, form]);
 
-  // Bring the receipt into view once the application is logged
+  // bring the receipt into view once the application is logged
   useEffect(() => {
     if (refNo) {
       panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -187,17 +164,16 @@ export function AdmissionPage({
   const levelValue = form.watch("level");
   const modeValue = form.watch("mode");
   const errors = form.formState.errors;
+  const isSubmitting = form.formState.isSubmitting;
 
   return (
     <>
       <PageHead
-        no="06"
-        bn="ভর্তি আবেদন"
+        eyebrow="Admission"
         title={
           <>
-            Three minutes now. A call
-            <br />
-            within <em className="italic text-brand">24 hours.</em>
+            Three minutes now. A call within{" "}
+            <em className="italic text-brand">24 hours.</em>
           </>
         }
         lede="Fill the form and the admission desk calls you back — same day during office hours, 24 hours at worst. The call books your free demo class and a diagnostic mock test. No fees, no obligation, no expiring discounts."
@@ -209,29 +185,14 @@ export function AdmissionPage({
         ]}
       />
 
-      <section className="bg-paper">
-        <Shell className="px-4 py-16 sm:px-8 sm:py-24">
-          <SectionHead
-            no="01"
-            bn="আবেদন ফরম"
-            en="The application"
-            title={
-              <>
-                The easiest test you&apos;ll
-                <br />
-                take with <em className="italic text-brand">us.</em>
-              </>
-            }
-            lede="Seven fields, one page, no account creation. The desk reads every application — usually within the hour during office time."
-          />
-
-          <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-12">
-            {/* the form / success panel */}
-            <div ref={panelRef} className="scroll-mt-28">
-              <Reveal>
+      <section className="py-16 md:py-24">
+        <Container className="grid gap-12 lg:grid-cols-[1.45fr_1fr] lg:gap-14">
+          {/* the form / success panel */}
+          <div ref={panelRef} className="scroll-mt-24">
+            <Reveal>
               {refNo ? (
                 <SuccessPanel
-                  form={form}
+                  values={form.getValues()}
                   refNo={refNo}
                   onNavigate={onNavigate}
                 />
@@ -239,24 +200,16 @@ export function AdmissionPage({
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   noValidate
-                  className="border-2 border-ink bg-card shadow-[8px_8px_0_0_rgba(26,21,18,0.9)]"
+                  className="rounded-2xl border border-hairline bg-card p-6 sm:p-10"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 bg-ink px-5 py-4 text-paper sm:px-7">
-                    <span className="text-[11px] font-bold uppercase tracking-[0.22em]">
-                      Application for admission
-                    </span>
-                    <span className="font-bn-serif text-[13px] font-medium text-paper/70">
+                  <div className="flex flex-wrap items-baseline justify-between gap-3">
+                    <Eyebrow>The application</Eyebrow>
+                    <span className="font-bengali text-[13px] text-ink-faint">
                       ভর্তি আবেদন
-                    </span>
-                    <span className="font-display text-[10px] font-bold tracking-[0.24em] text-paper/50">
-                      Form AD-01
                     </span>
                   </div>
 
-                  <div
-                    style={ruledPaper}
-                    className="grid gap-5 px-5 py-7 sm:grid-cols-2 sm:gap-6 sm:px-7 sm:py-9"
-                  >
+                  <div className="mt-8 grid gap-6 sm:grid-cols-2">
                     <Field
                       label="Full name"
                       htmlFor="adm-name"
@@ -336,12 +289,10 @@ export function AdmissionPage({
                             Not sure — help me choose
                           </option>
                         </select>
-                        <span
+                        <ChevronDown
                           aria-hidden
-                          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-ink-soft"
-                        >
-                          ▼
-                        </span>
+                          className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
+                        />
                       </div>
                     </Field>
 
@@ -371,25 +322,18 @@ export function AdmissionPage({
                             </option>
                           ))}
                         </select>
-                        <span
+                        <ChevronDown
                           aria-hidden
-                          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-ink-soft"
-                        >
-                          ▼
-                        </span>
+                          className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
+                        />
                       </div>
                     </Field>
 
-                    {/* mode — radio-style toggle buttons */}
+                    {/* mode */}
                     <div className="sm:col-span-2">
-                      <div className="flex items-baseline justify-between gap-3">
-                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink">
-                          Class mode<span className="ml-1 text-brand">*</span>
-                        </span>
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
-                          Both get the same teachers
-                        </span>
-                      </div>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-soft">
+                        Class mode<span className="ml-1 text-brand">*</span>
+                      </span>
                       <div className="mt-2 grid gap-3 sm:grid-cols-2">
                         {MODES.map((m) => {
                           const active = modeValue === m.value;
@@ -404,35 +348,28 @@ export function AdmissionPage({
                                 })
                               }
                               className={cn(
-                                "flex cursor-pointer items-center gap-3.5 border-2 px-4 py-3.5 text-left transition-colors duration-150",
+                                "flex cursor-pointer items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-all duration-200",
                                 active
-                                  ? "border-ink bg-ink text-paper"
-                                  : "border-ink/30 bg-paper text-ink hover:border-ink"
+                                  ? "border-ink bg-sand/70"
+                                  : "border-hairline bg-paper hover:border-ink-faint"
                               )}
                             >
                               <span
                                 aria-hidden
                                 className={cn(
-                                  "flex h-4 w-4 shrink-0 items-center justify-center border-2",
-                                  active
-                                    ? "border-paper bg-brand"
-                                    : "border-ink/40"
+                                  "flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors",
+                                  active ? "border-ink" : "border-ink-faint/60"
                                 )}
                               >
                                 {active ? (
-                                  <span className="h-1.5 w-1.5 bg-paper" />
+                                  <span className="h-2 w-2 rounded-full bg-brand" />
                                 ) : null}
                               </span>
                               <span className="min-w-0">
-                                <span className="block text-sm font-bold uppercase tracking-[0.08em]">
+                                <span className="block text-sm font-semibold text-ink">
                                   {m.title}
                                 </span>
-                                <span
-                                  className={cn(
-                                    "mt-0.5 block text-xs",
-                                    active ? "text-paper/60" : "text-ink-soft"
-                                  )}
-                                >
+                                <span className="mt-0.5 block text-xs text-ink-soft">
                                   {m.sub}
                                 </span>
                               </span>
@@ -443,14 +380,8 @@ export function AdmissionPage({
                       {errors.mode?.message ? (
                         <p
                           role="alert"
-                          className="mt-1.5 flex items-baseline gap-1.5 text-[11px] font-bold text-brand-deep"
+                          className="mt-1.5 text-xs text-brand-deep"
                         >
-                          <span
-                            aria-hidden
-                            className="text-[8px] leading-none"
-                          >
-                            ■
-                          </span>
                           {errors.mode.message}
                         </p>
                       ) : null}
@@ -466,167 +397,116 @@ export function AdmissionPage({
                       <textarea
                         id="adm-message"
                         rows={4}
-                        placeholder="Target band, exam date, questions — anything."
-                        className={cn(inputCls, "h-auto resize-none py-3.5 leading-relaxed")}
+                        placeholder="Target score, exam date, past attempts, specific fears…"
+                        className={cn(inputCls, "h-auto resize-none py-3.5")}
                         {...form.register("message")}
                       />
                     </Field>
+                  </div>
 
-                    <div className="sm:col-span-2">
-                      <button
-                        type="submit"
-                        disabled={form.formState.isSubmitting}
-                        className="group/btn inline-flex w-full cursor-pointer select-none items-center justify-center gap-3 border-2 border-ink bg-brand px-8 py-4 font-sans text-[13px] font-bold uppercase tracking-[0.14em] text-paper shadow-[4px_4px_0_0_#1a1512] transition-colors duration-200 hover:bg-ink hover:shadow-[4px_4px_0_0_#e31e24] disabled:cursor-wait disabled:opacity-70 disabled:hover:bg-brand disabled:hover:shadow-[4px_4px_0_0_#1a1512]"
-                      >
-                        {form.formState.isSubmitting ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            Submitting…
-                          </>
-                        ) : (
-                          <>
-                            Submit application
-                            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
-                          </>
-                        )}
-                      </button>
-                      <p className="mt-5 border-t border-dashed border-ink/25 pt-4 text-center text-[11px] font-semibold leading-relaxed text-ink-soft">
-                        No payment is asked on this form — or anywhere else on
-                        this site. Never pay anyone claiming to guarantee a
-                        band score.
-                      </p>
-                    </div>
+                  <div className="mt-9 flex flex-col gap-4 border-t border-hairline pt-7 sm:flex-row sm:items-center sm:justify-between">
+                    <p className="order-2 text-[13px] leading-relaxed text-ink-faint sm:order-1 sm:max-w-[240px]">
+                      No fees are due at this step — the demo class and
+                      diagnostic come first.
+                    </p>
+                    <Btn
+                      type="submit"
+                      size="lg"
+                      disabled={isSubmitting}
+                      className="order-1 w-full sm:order-2 sm:w-auto"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Submitting…
+                        </>
+                      ) : (
+                        "Submit application"
+                      )}
+                    </Btn>
                   </div>
                 </form>
               )}
-              </Reveal>
-            </div>
-
-            {/* aside — the contact ledger */}
-            <div className="flex flex-col gap-8">
-              <Reveal delay={0.08}>
-                <aside className="border-2 border-ink bg-ink text-paper">
-                  <div className="bg-grain relative">
-                    <div className="relative p-6 sm:p-7">
-                      <Kicker tone="paper">The admission desk</Kicker>
-                      <p className="font-bn-serif mt-4 text-lg font-medium leading-snug text-paper/90">
-                        সরাসরি কথা বলতে চাও?
-                      </p>
-                      <h3 className="font-display mt-2 text-2xl font-semibold leading-tight text-paper">
-                        We actually pick up the phone.
-                      </h3>
-                      <p className="mt-3 text-[13px] leading-relaxed text-paper/60">
-                        Calling beats typing when you have ten questions. Ring
-                        the desk, or message on WhatsApp — a human replies, not
-                        a bot.
-                      </p>
-                      <div className="mt-5 border-t border-paper/20 pt-1">
-                        <RuleRow
-                          label="Phone"
-                          value={
-                            <a className="link-sweep" href={BRAND.phoneHref}>
-                              {BRAND.phone}
-                            </a>
-                          }
-                          className={paperRuleCls}
-                        />
-                        <RuleRow
-                          label="WhatsApp"
-                          value={
-                            <a
-                              className="link-sweep"
-                              href={BRAND.whatsappHref}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {BRAND.whatsapp}
-                            </a>
-                          }
-                          className={paperRuleCls}
-                        />
-                        <RuleRow
-                          label="Email"
-                          value={
-                            <a
-                              className="link-sweep break-all"
-                              href={BRAND.emailHref}
-                            >
-                              {BRAND.email}
-                            </a>
-                          }
-                          className={paperRuleCls}
-                        />
-                        <RuleRow
-                          label="Hours"
-                          value={BRAND.hours}
-                          className={paperRuleCls}
-                        />
-                        <RuleRow
-                          label="Desk"
-                          value={BRAND.location}
-                          className={paperRuleCls}
-                        />
-                      </div>
-                      <div className="mt-6 grid gap-3">
-                        <Btn
-                          variant="ghost-paper"
-                          href={BRAND.phoneHref}
-                          className="w-full"
-                        >
-                          Call the desk
-                        </Btn>
-                        <Btn
-                          variant="ghost-paper"
-                          href={BRAND.whatsappHref}
-                          external
-                          className="w-full"
-                        >
-                          WhatsApp us
-                        </Btn>
-                      </div>
-                    </div>
-                  </div>
-                </aside>
-              </Reveal>
-
-              <Reveal delay={0.14}>
-                <div className="border-2 border-ink bg-card p-6">
-                  <Kicker>Not ready yet?</Kicker>
-                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
-                    Watch a full class free on YouTube first — same teachers,
-                    same method. The form will still be here when the exam
-                    date gets close.
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <Btn
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onNavigate("lessons")}
-                    >
-                      Free lessons
-                    </Btn>
-                    <Btn
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onNavigate("courses")}
-                    >
-                      View programs
-                    </Btn>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
+            </Reveal>
           </div>
-        </Shell>
-      </section>
 
-      <WhatNext />
+          {/* aside */}
+          <aside className="space-y-8 lg:pt-2">
+            <Reveal delay={0.08}>
+              <SectionHead
+                eyebrow="What happens next"
+                title="Three steps, no pressure."
+                className="max-w-none"
+              />
+              <ol className="mt-8 space-y-7">
+                {NEXT_STEPS.map((s) => (
+                  <li key={s.no} className="flex gap-5">
+                    <span className="font-mono text-xs tracking-[0.12em] text-brand">
+                      {s.no}
+                    </span>
+                    <div>
+                      <h3 className="text-sm font-semibold text-ink">
+                        {s.title}
+                      </h3>
+                      <p className="mt-1.5 text-[13px] leading-relaxed text-ink-soft">
+                        {s.copy}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </Reveal>
+
+            <Reveal delay={0.14}>
+              <div className="rounded-2xl bg-sand/70 p-6 sm:p-7">
+                <Eyebrow>Reach us directly</Eyebrow>
+                <ul className="mt-5 space-y-3.5 text-sm">
+                  <li>
+                    <a
+                      href={BRAND.phoneHref}
+                      className="inline-flex items-center gap-2.5 text-ink transition-colors hover:text-brand-deep"
+                    >
+                      <Phone className="h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={1.5} />
+                      {BRAND.phone}
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href={BRAND.emailHref}
+                      className="inline-flex items-center gap-2.5 break-all text-ink transition-colors hover:text-brand-deep"
+                    >
+                      <Mail className="h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={1.5} />
+                      {BRAND.email}
+                    </a>
+                  </li>
+                  <li className="flex items-center gap-2.5 text-ink-soft">
+                    <Clock className="h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={1.5} />
+                    {BRAND.hours}
+                  </li>
+                  <li className="flex items-center gap-2.5 text-ink-soft">
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-ink-faint" strokeWidth={1.5} />
+                    {BRAND.location}
+                  </li>
+                </ul>
+                <Btn
+                  variant="outline"
+                  href={BRAND.whatsappHref}
+                  external
+                  className="mt-6 w-full"
+                >
+                  Message us on WhatsApp
+                </Btn>
+              </div>
+            </Reveal>
+          </aside>
+        </Container>
+      </section>
     </>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/*  Field — official-form field wrapper                                */
+/*  Field wrapper                                                      */
 /* ------------------------------------------------------------------ */
 
 function Field({
@@ -635,42 +515,36 @@ function Field({
   error,
   required,
   hint,
-  className,
   children,
+  className,
 }: {
   label: string;
-  htmlFor?: string;
+  htmlFor: string;
   error?: string;
   required?: boolean;
   hint?: string;
-  className?: string;
   children: ReactNode;
+  className?: string;
 }) {
   return (
-    <div className={className}>
+    <div className={cn("min-w-0", className)}>
       <label
         htmlFor={htmlFor}
-        className="flex items-baseline justify-between gap-3"
+        className="flex items-baseline justify-between gap-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-ink-soft"
       >
-        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink">
+        <span>
           {label}
           {required ? <span className="ml-1 text-brand">*</span> : null}
         </span>
         {hint ? (
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
+          <span className="text-[11px] font-normal normal-case tracking-normal text-ink-faint">
             {hint}
           </span>
         ) : null}
       </label>
       <div className="mt-2">{children}</div>
       {error ? (
-        <p
-          role="alert"
-          className="mt-1.5 flex items-baseline gap-1.5 text-[11px] font-bold text-brand-deep"
-        >
-          <span aria-hidden className="text-[8px] leading-none">
-            ■
-          </span>
+        <p role="alert" className="mt-1.5 text-xs text-brand-deep">
           {error}
         </p>
       ) : null}
@@ -679,164 +553,68 @@ function Field({
 }
 
 /* ------------------------------------------------------------------ */
-/*  Success panel — replaces the form after a 201                      */
+/*  Success panel                                                      */
 /* ------------------------------------------------------------------ */
 
 function SuccessPanel({
-  form,
+  values,
   refNo,
   onNavigate,
 }: {
-  form: UseFormReturn<FormValues>;
+  values: FormValues;
   refNo: string;
   onNavigate: (p: PageId) => void;
 }) {
-  const courseSlug = form.getValues("course");
   const courseLabel =
-    COURSES.find((c) => c.slug === courseSlug)?.title ??
-    (courseSlug === "not-sure" ? "Not sure — needs guidance" : courseSlug);
+    COURSES.find((c) => c.slug === values.course)?.title ??
+    (values.course === "not-sure" ? "Not sure — needs guidance" : values.course);
 
   return (
-    <div className="border-2 border-ink bg-card shadow-[8px_8px_0_0_rgba(26,21,18,0.9)]">
-      <div className="flex items-center justify-between gap-x-6 bg-ink px-5 py-4 text-paper sm:px-7">
-        <span className="text-[11px] font-bold uppercase tracking-[0.22em]">
-          Application received
-        </span>
-        <span className="font-display text-[10px] font-bold tracking-[0.24em] text-paper/50">
-          Form AD-01
-        </span>
+    <div className="rounded-2xl border border-hairline bg-card p-8 text-center sm:p-12">
+      <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-ink text-paper">
+        <Check className="h-6 w-6" strokeWidth={1.5} />
+      </span>
+      <h2 className="font-display mt-7 text-3xl font-medium tracking-[-0.01em] text-ink">
+        Application received.
+      </h2>
+      <p className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-ink-soft">
+        The admission desk will call <strong className="text-ink">{values.phone}</strong>{" "}
+        within 24 hours to book your free demo class and diagnostic mock.
+      </p>
+
+      <div className="mx-auto mt-8 max-w-sm rounded-2xl bg-sand/70 p-6 text-left">
+        <div className="flex items-center justify-between gap-4">
+          <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-faint">
+            Reference
+          </span>
+          <span className="font-mono text-sm font-semibold text-ink">
+            № {refNo}
+          </span>
+        </div>
+        <dl className="mt-4 space-y-2.5 text-sm">
+          <div className="flex justify-between gap-4">
+            <dt className="text-ink-soft">Course</dt>
+            <dd className="text-right font-medium text-ink">{courseLabel}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-ink-soft">Level</dt>
+            <dd className="text-right font-medium text-ink">{values.level}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt className="text-ink-soft">Mode</dt>
+            <dd className="text-right font-medium text-ink">{values.mode}</dd>
+          </div>
+        </dl>
       </div>
 
-      <div
-        style={ruledPaper}
-        className="relative px-5 py-8 sm:px-8 sm:py-10"
-      >
-        <Reveal>
-          <Stamp>Received</Stamp>
-          <h3 className="font-display mt-6 max-w-xl text-2xl font-semibold leading-tight tracking-tight text-ink sm:text-3xl">
-            <span className="font-bn-serif font-medium">আবেদন পৌঁছেছে</span> —
-            Application № {refNo}.
-          </h3>
-          <p className="mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
-            The desk has it. Keep your phone on — a call from{" "}
-            <a
-              href={BRAND.phoneHref}
-              className="link-sweep font-semibold text-ink"
-            >
-              {BRAND.phone}
-            </a>{" "}
-            comes within 24 hours.
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.08}>
-          <ol className="mt-8 border-t-2 border-ink">
-            {NEXT_STEPS.map((s, i) => (
-              <li
-                key={s.title}
-                className="grid grid-cols-[2.6rem_1fr] gap-x-4 border-b border-dashed border-ink/25 py-4"
-              >
-                <span className="font-display pt-0.5 text-sm font-bold tracking-[0.16em] text-brand">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span>
-                  <span className="font-display block text-base font-semibold text-ink">
-                    {s.title}
-                  </span>
-                  <span className="mt-1 block text-[13px] leading-relaxed text-ink-soft">
-                    {s.copy}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
-
-        <Reveal delay={0.14}>
-          <div className="mt-8 border-2 border-ink bg-paper">
-            <div className="border-b border-ink/20 bg-paper-deep/60 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-soft">
-              For your records
-            </div>
-            <div className="px-4 py-1">
-              <RuleRow label="Name" value={form.getValues("name")} />
-              <RuleRow label="Phone" value={form.getValues("phone")} />
-              <RuleRow label="Course" value={courseLabel} />
-              <RuleRow label="Mode" value={form.getValues("mode")} />
-            </div>
-          </div>
-        </Reveal>
-
-        <Reveal delay={0.2}>
-          <div className="mt-8 flex flex-wrap gap-4">
-            <Btn onClick={() => onNavigate("lessons")}>
-              Watch free lessons meanwhile
-            </Btn>
-            <Btn variant="outline" onClick={() => onNavigate("home")}>
-              Back to home
-            </Btn>
-          </div>
-        </Reveal>
+      <div className="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+        <Btn variant="outline" onClick={() => onNavigate("home")}>
+          Back to home
+        </Btn>
+        <Btn href={BRAND.whatsappHref} external>
+          Say hello on WhatsApp
+        </Btn>
       </div>
     </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  §02 · What happens next — the three-step process                   */
-/* ------------------------------------------------------------------ */
-
-function WhatNext() {
-  return (
-    <section className="border-t-2 border-ink bg-paper-deep">
-      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead
-          no="02"
-          bn="এরপর কী হবে"
-          en="What happens next"
-          title={
-            <>
-              From form to first class —
-              <br />
-              in <em className="italic text-brand">three</em> steps.
-            </>
-          }
-          lede="No black box. This is exactly what happens after you press submit."
-        />
-
-        <div className="mt-12 grid border-2 border-ink bg-paper sm:grid-cols-3">
-          {PROCESS_STEPS.map((s, i) => (
-            <Reveal
-              key={s.no}
-              delay={i * 0.07}
-              className={cn(
-                "border-ink",
-                i !== 0 && "border-t sm:border-t-0 sm:border-l"
-              )}
-            >
-              <article className="flex h-full flex-col p-6 sm:p-8">
-                <div className="flex items-baseline justify-between gap-3">
-                  <span className="font-display text-4xl font-bold leading-none text-brand sm:text-5xl">
-                    {s.no}
-                  </span>
-                  <span className="text-right text-[9px] font-bold uppercase tracking-[0.18em] text-ink-faint">
-                    {s.tag}
-                  </span>
-                </div>
-                <h3 className="font-display mt-5 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
-                  {s.title}
-                </h3>
-                <p className="mt-3 flex-1 text-[13px] leading-relaxed text-ink-soft">
-                  {s.copy}
-                </p>
-                <span
-                  aria-hidden
-                  className="mt-6 block h-[3px] w-10 bg-brand"
-                />
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Shell>
-    </section>
   );
 }

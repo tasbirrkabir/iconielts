@@ -135,3 +135,29 @@ Work Log:
 Stage Summary:
 - COMPLETE redesign shipped: 6 pages in coherent 'Institute Prospectus' editorial system (paper/ink/red, Fraunces+Noto Serif Bengali, sharp corners, rules, stamps, ledgers, numbered sections)
 - All interactions browser-verified end-to-end incl. DB persistence; mobile fully responsive; lint clean
+
+---
+Task ID: 7
+Agent: main-agent (Z.ai Code)
+Task: V3 redesign per user feedback "i want minimalist desgin not brutalism" — replace the sharp prospectus/brutalist system with quiet warm minimalism
+
+Work Log:
+- User rejected V2 (sharp corners, 2px borders, stamps, marquees, offset shadows, heavy red slabs) as too brutalist
+- REWROTE globals.css: "Quiet Studio" palette — paper #faf9f5, sand #f3f0e8, ink #232019, ink-soft/faint warm grays, hairline #e7e3d8, brand red #e31e24 used SPARINGLY (dots, one italic word, tiny chips). Soft radius restored (rounded-full pills, rounded-2xl media). REMOVED marquee/stamp/ledger/graph/grain/link-sweep utilities. New: .img-soft (gentle desaturation), .link-underline (soft animated underline), thin neutral scrollbar, warm selection color
+- REWROTE layout.tsx: fonts = Fraunces (display) + Instrument_Sans (body) + Hind_Siliguri (Bengali accents, also in sans/display fallback chains so Bengali lesson titles render in Hind); dropped Archivo + Noto Serif Bengali; themeColor #faf9f5
+- REWROTE kit.tsx minimal primitives: Container (1080px), Eyebrow (red dot + tracked caps), SectionHead, Btn (solid/brand/outline/paper/outline-paper, rounded-full, ink→red hover), ArrowLink (underline sweep + arrow slide), Figure (rounded-2xl + img-soft + hover scale 1.03), Stat (serif number + Counter), Chip, PageHead (eyebrow + serif h1 + lede + hairline-separated meta row — no boxes), CtaPanel (single calm ink rounded-[2rem] moment per page)
+- REWROTE navbar.tsx: paper sticky bar, "ICON." serif wordmark w/ red period, links w/ red active dot, pill Enroll CTA (ink→red hover), border+blur on scroll; mobile = full-screen paper overlay w/ staggered serif links + Enroll + phone
+- REWROTE footer.tsx: light hairline footer (mt-auto sticky), brand/explore/programs/contact cols, quiet "ICON" watermark at ink/4.5% opacity, bottom bar w/ Bengali line
+- REBUILT home.tsx: hero (serif "Band 7+ isn't a dream. It's a plan — taught in Bangla." + sand-offset image), 4-stat hairline band (Counter), philosophy 2-col, courses index rows (hairline list, hover arrow pill), band roadmap 5.0→8.0 (8.0 in red), modules 2×2 hairline list, free-lessons teaser (featured video + 3-row list), auto-rotating testimonial w/ dots, minimal FAQ accordion, ink CtaPanel
+- REBUILT about.tsx: story + framed photo + numbers card, 4 principles (sand band), faculty 2 profiles, clean weekly timetable (Mock day = brand tint chip), 8-platform socials hairline list, CtaPanel
+- REBUILT courses.tsx: 6 alternating image/content sections (facts dl, red-check features, sand outcomes box, Enroll + WhatsApp), compare table, decision guide rows (click → enroll w/ slug), CtaPanel
+- REBUILT lessons.tsx: featured video + filter pills (rounded-full, active=ink) + 3-col card grid, sand subscribe strip, CtaPanel
+- REBUILT success.tsx: stats, success-wall photo, 4 testimonial cards (strikethrough from → red to), Band 5/6.5/8 comparison, CtaPanel
+- REBUILT admission.tsx: soft rounded form card (h-12 rounded-xl inputs, radio-card mode toggle), kept EXACT contract: react-hook-form + zod, POST /api/admissions {name,phone,email,course,level,mode,message?}, toast, SuccessPanel w/ ref № + summary + steps; aside = 3-step what-next + contact card + WhatsApp
+- Fixed: unused Eyebrow import (success), redundant ternary (kit), invalid sm:nth-last-2 class → container border-b (about socials), removed unused eslint-disable directives via --fix
+- VERIFIED (agent-browser + VLM): home hero VLM 9/10 "premium, publication-quality… avoids all AI-slop pitfalls"; all 6 pages + all mid/bottom sections VLM OK; nav on all pages; courses Enroll → #admission w/ "IELTS Full Course — ৳12,000" preselected; form submit → POST 201 → SQLite row → success panel → test row deleted; Listening filter → exactly 3 cards; FAQ accordion toggles; mobile 390px scrollWidth=390 on ALL 6 pages; hamburger overlay opens + navigates; footer bottom == doc height (sticks via mt-auto + flex col); zero console/page errors; bun run lint 0/0
+
+Stage Summary:
+- V3 "Quiet Studio" minimalism shipped: warm paper + soft ink + single restrained red accent, Fraunces/Instrument Sans/Hind Siliguri, rounded pills & 2xl media, hairline structure, gentle reveals
+- All content preserved from research (real courses, prices, 16 real YouTube lesson IDs, real contact info, 8 socials); admission API + DB untouched and re-verified end-to-end
+- Design rules for future edits: red only for dots/one italic word/small chips; no gradients, no heavy borders, no offset shadows, no marquees/stamps; one ink CtaPanel per page; hairlines over boxes; img-soft on all photos

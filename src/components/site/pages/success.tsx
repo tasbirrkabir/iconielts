@@ -1,27 +1,27 @@
 "use client";
 
+import { MoveRight } from "lucide-react";
 import {
-  Btn,
-  Frame,
-  Kicker,
+  Container,
+  CtaPanel,
+  Figure,
   PageHead,
   Reveal,
   SectionHead,
-  Shell,
-  Stamp,
+  Stat,
 } from "../kit";
-import { Counter } from "../counter";
-import {
-  BAND_JOURNEY,
-  BRAND,
-  TESTIMONIALS,
-  type PageId,
-} from "@/lib/site-data";
-import { cn } from "@/lib/utils";
+import { BRAND, TESTIMONIALS, type PageId } from "@/lib/site-data";
 
 /* ================================================================== */
-/*  SUCCESS — the results ledger                                       */
+/*  SUCCESS — the wall of results                                       */
 /* ================================================================== */
+
+const WALL_STATS = [
+  { value: 8500, suffix: "+", label: "Learners in the community" },
+  { value: "+1.5", suffix: "", label: "Typical band improvement" },
+  { value: 59, suffix: "", label: "Free lessons behind them" },
+  { value: 34000, suffix: "+", label: "Views across lessons" },
+];
 
 export function SuccessPage({
   onNavigate,
@@ -31,338 +31,154 @@ export function SuccessPage({
   return (
     <>
       <PageHead
-        no="05"
-        bn="সাফল্যের গল্প"
+        eyebrow="Success stories"
         title={
           <>
-            Every score below is a screenshot
-            <br />
-            we <em className="italic text-brand">actually received.</em>
+            From Band 5 to Band 8 —{" "}
+            <em className="italic text-brand">real</em> students, real scores.
           </>
         }
-        lede="Results day at ICON means a phone that won't stop buzzing. We keep every message — here is the ledger they add up to."
+        lede="No stock photos, no invented names. These are the students who did the boring weeks — and got the scores that opened doors."
         meta={[
-          { label: "Best result", value: "Band 8.0" },
-          { label: "Typical gain", value: "+1.5 bands" },
-          { label: "Community", value: "8,500+ learners" },
-          { label: "Proof", value: "WhatsApp screenshots" },
+          { label: "Typical gain", value: "+1.0 – 1.5 bands" },
+          { label: "Time frame", value: "One course" },
+          { label: "Method", value: "Mocks + feedback" },
+          { label: "Secret", value: "Consistency" },
         ]}
       />
-      <TheWall />
-      <ProgressRuler />
-      <LedgerEntries />
-      <YourEntry onNavigate={onNavigate} />
-    </>
-  );
-}
 
-/* ------------------------------------------------------------------ */
-/*  §01 — The wall                                                     */
-/* ------------------------------------------------------------------ */
-
-function TheWall() {
-  return (
-    <section className="bg-paper">
-      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead
-          no="01"
-          bn="সাফল্যের দেয়াল"
-          en="The wall"
-          title={
-            <>
-              Results day,
-              <br />
-              every <em className="italic text-brand">single</em> time.
-            </>
-          }
-          lede="Certificates, confetti, and a group chat that will not quiet down. The photo is staged; the feelings are not."
-        />
-
-        <Reveal delay={0.08}>
-          <div className="relative mt-12">
-            <Frame
+      {/* the wall */}
+      <section className="py-16 md:py-20">
+        <Container>
+          <Reveal>
+            <Figure
               src="/images/success-wall.png"
               alt="ICON English Center students celebrating their IELTS results with certificates"
-              caption="The results wall — certificates from recent batches"
-              ratio="16/8"
-              className="shadow-[12px_12px_0_0_rgba(26,21,18,0.9)]"
-              sizes="(max-width: 1200px) 100vw, 1160px"
+              ratio="aspect-[16/8]"
+              caption="Results day — certificates, confetti, and the group chat finally going quiet."
             />
-            <Stamp className="absolute -right-3 -top-5 bg-paper px-3 py-2 sm:-right-5">
-              Verified results
-            </Stamp>
-          </div>
-        </Reveal>
-
-        {/* big figures */}
-        <div className="mt-12 grid grid-cols-2 divide-ink/15 border-t-2 border-ink sm:divide-x lg:grid-cols-4">
-          {[
-            { display: "8.0", label: "Best band achieved" },
-            { display: "+1.5", label: "Typical gain in bands" },
-            { display: "4", label: "Modules improved per student", suffix: "" },
-            { display: "100%", label: "Scripts read by a human" },
-          ].map((st, i) => (
-            <div
-              key={st.label}
-              className={cn(
-                "border-ink/15",
-                i >= 2 && "border-t lg:border-t-0",
-                i % 2 === 1 && "border-l sm:border-l"
-              )}
-            >
-              <div className="px-5 py-8 sm:px-8 sm:py-10">
-                <div className="font-display text-4xl font-semibold leading-none tracking-tight text-brand sm:text-5xl">
-                  {st.display}
-                </div>
-                <div className="mt-4 text-[11px] font-bold uppercase tracking-[0.2em] text-ink">
-                  {st.label}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-      </Shell>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  §02 — Progress ruler                                               */
-/* ------------------------------------------------------------------ */
-
-function ProgressRuler() {
-  return (
-    <section className="border-y-2 border-ink bg-paper-deep">
-      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead
-          no="02"
-          bn="ব্যান্ড স্কেল"
-          en="The ruler"
-          title={
-            <>
-              What the numbers mean
-              <br />
-              on the <em className="italic text-brand">band ruler.</em>
-            </>
-          }
-          lede="A band is not a grade — it's a position on a ruler every examiner in the world reads the same way. Here's where our students start and land."
-        />
-
-        <Reveal delay={0.08}>
-          <div className="mt-14">
-            {/* the ruler — continuous top rule + anchored tick columns */}
-            <div className="grid grid-cols-2 gap-x-6 sm:grid-cols-4 sm:gap-x-0">
-              {BAND_JOURNEY.map((step, i) => {
-                const reached = i >= 1;
-                return (
-                  <div key={step.band} className="relative sm:pr-8">
-                    {/* tick */}
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "absolute -top-[7px] left-0 h-3.5 w-3.5 border-2",
-                        reached
-                          ? "border-brand bg-brand"
-                          : "border-ink bg-paper-deep"
-                      )}
-                    />
-                    <div className={cn("border-t-2", reached ? "border-brand" : "border-ink")} />
-                    <p
-                      className={cn(
-                        "font-display mt-6 text-4xl font-black leading-none tracking-tight sm:text-5xl",
-                        reached ? "text-brand" : "text-ink/35"
-                      )}
-                    >
-                      {step.band}
-                    </p>
-                    <h3
-                      className={cn(
-                        "font-display mt-4 text-base font-semibold leading-tight sm:text-lg",
-                        reached ? "text-ink" : "text-ink/50"
-                      )}
-                    >
-                      {step.title}
-                    </h3>
-                    <p className="mt-2 min-h-[3.5rem] text-xs leading-relaxed text-ink-soft">
-                      {step.description}
-                    </p>
-                    <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-faint">
-                      {i === 0 ? "Where most start" : `Stage ${String(i + 1).padStart(2, "0")}`}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-ink/20 pt-6">
-              <p className="font-bn-serif text-lg font-medium text-ink">
-                ৫.০ থেকে ৮.০ — প্রতিটা ঘরেই একটা গল্প আছে।
-              </p>
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink-faint">
-                Red = where ICON students land
-              </p>
-            </div>
-          </div>
-        </Reveal>
-      </Shell>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  §03 — Ledger entries                                               */
-/* ------------------------------------------------------------------ */
-
-function LedgerEntries() {
-  return (
-    <section className="bg-paper">
-      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
-        <SectionHead
-          no="03"
-          bn="লেজারের এন্ট্রি"
-          en="The ledger"
-          title={
-            <>
-              Entries № 001–004,
-              <br />
-              copied <em className="italic text-brand">verbatim.</em>
-            </>
-          }
-          lede="Names shared with permission; typos and joy preserved exactly as received on results day."
-        />
-
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-0 lg:border-2 lg:border-ink">
-          {TESTIMONIALS.map((t, i) => (
-            <Reveal
-              key={t.name}
-              delay={i * 0.06}
-              className={cn(
-                i === 1 && "lg:border-l lg:border-ink",
-                i >= 2 && "border-t lg:border-t-0",
-                i === 2 && "lg:border-l lg:border-ink"
-              )}
-            >
-              <article
-                className={cn(
-                  "relative flex h-full flex-col border-2 border-ink bg-card p-6 sm:p-8",
-                  (i === 1 || i === 2) && "lg:border-l-0 lg:border-t-0",
-                  i >= 2 && "lg:border-t"
-                )}
-              >
-                {/* entry number */}
-                <div className="flex items-center justify-between">
-                  <span className="font-display text-xs font-bold tracking-[0.28em] text-brand">
-                    ENTRY № {String(i + 1).padStart(3, "0")}
-                  </span>
-                  <span
-                    aria-hidden
-                    className="font-display select-none text-5xl font-black leading-none text-brand/15"
-                  >
-                    &rdquo;
-                  </span>
-                </div>
-
-                <div className="mt-5 flex items-center gap-4">
-                  { }
-                  <img
-                    src={t.avatar}
-                    alt={`Portrait of ${t.name}`}
-                    loading="lazy"
-                    className="img-print h-14 w-14 border-2 border-ink object-cover"
-                  />
-                  <div>
-                    <h3 className="font-display text-xl font-semibold leading-tight text-ink">
-                      {t.name}
-                    </h3>
-                    <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
-                      {t.role}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mt-6 flex items-end gap-5 border-y border-dashed border-ink/25 py-4">
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-faint">
-                      Entered at
-                    </p>
-                    <p className="font-display mt-1 text-xl font-medium text-ink-faint line-through decoration-brand/70 decoration-2">
-                      {t.from}
-                    </p>
-                  </div>
-                  <span aria-hidden className="font-display pb-1 text-2xl text-brand">
-                    →
-                  </span>
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-ink-faint">
-                      Achieved
-                    </p>
-                    <p className="font-display mt-1 text-3xl font-black leading-none text-brand">
-                      {t.to}
-                    </p>
-                  </div>
-                  <span className="ml-auto text-right text-[10px] font-bold uppercase leading-relaxed tracking-[0.14em] text-ink-faint">
-                    {t.course}
-                  </span>
-                </div>
-
-                <blockquote className="font-display mt-5 flex-1 text-[15px] font-medium italic leading-relaxed text-ink">
-                  “{t.quote}”
-                </blockquote>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Shell>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  §04 — Your entry (ink slab)                                        */
-/* ------------------------------------------------------------------ */
-
-function YourEntry({ onNavigate }: { onNavigate: (p: PageId) => void }) {
-  return (
-    <section className="bg-ink text-paper">
-      <div className="bg-grain relative">
-        <div className="relative mx-auto max-w-[1200px] border-x border-paper/15 px-4 py-16 sm:px-8 sm:py-24">
-          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-[1.6fr_1fr]">
-            <div>
-              <Reveal>
-                <Kicker tone="paper">Entry № 005 — unwritten</Kicker>
-              </Reveal>
-              <Reveal delay={0.07}>
-                <h2 className="font-display mt-5 text-balance text-4xl font-semibold leading-[1.02] tracking-tight sm:text-6xl">
-                  The next entry in this ledger is{" "}
-                  <em className="italic text-brand">yours</em> to write.
-                </h2>
-              </Reveal>
-              <Reveal delay={0.12}>
-                <p className="font-bn-serif mt-6 text-lg font-medium text-paper/80">
-                  পরের সাফল্যের গল্পটা তোমারই হোক।
-                </p>
-              </Reveal>
-            </div>
-            <Reveal delay={0.12}>
-              <div className="space-y-4">
-                <Btn variant="paper" size="lg" onClick={() => onNavigate("admission")} className="w-full">
-                  Start your entry
-                </Btn>
-                <Btn
-                  variant="ghost-paper"
-                  size="lg"
-                  href={BRAND.whatsappHref}
-                  external
-                  className="w-full"
+          </Reveal>
+          <div className="mt-14 grid grid-cols-2 gap-y-10 md:grid-cols-4 md:gap-4">
+            {WALL_STATS.map((s, i) => (
+              <Reveal key={s.label} delay={i * 0.06}>
+                <div
+                  className={
+                    i === 0 ? "md:pl-0" : "md:border-l md:border-hairline md:pl-8"
+                  }
                 >
-                  Ask a question first
-                </Btn>
-              </div>
-            </Reveal>
+                  <Stat value={s.value} suffix={s.suffix} label={s.label} />
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </div>
-      </div>
-    </section>
+        </Container>
+      </section>
+
+      {/* entries */}
+      <section className="border-t border-hairline bg-sand/60 py-20 md:py-28">
+        <Container>
+          <SectionHead
+            eyebrow="The ledger"
+            title="Four entries from the wall."
+            lede="Every student below started exactly where you might be right now."
+          />
+          <div className="mt-12 grid gap-6 lg:grid-cols-2">
+            {TESTIMONIALS.map((t, i) => (
+              <Reveal key={t.name} delay={Math.min((i % 2) * 0.07, 0.14)}>
+                <article className="flex h-full flex-col rounded-2xl border border-hairline bg-card p-7 sm:p-8">
+                  <div className="flex items-center gap-4">
+                    { }
+                    <img
+                      src={t.avatar}
+                      alt={t.name}
+                      loading="lazy"
+                      className="img-soft h-12 w-12 rounded-full object-cover"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-ink">{t.name}</p>
+                      <p className="text-xs text-ink-faint">{t.role}</p>
+                    </div>
+                    <div className="ml-auto flex shrink-0 items-center gap-2 font-display text-lg font-medium">
+                      <s className="text-base font-normal text-ink-faint">
+                        {t.from}
+                      </s>
+                      <MoveRight
+                        aria-hidden
+                        className="h-4 w-4 text-brand"
+                        strokeWidth={1.5}
+                      />
+                      <span className="text-brand-deep">{t.to}</span>
+                    </div>
+                  </div>
+                  <p className="mt-6 flex-1 text-[15px] leading-relaxed text-ink-soft">
+                    “{t.quote}”
+                  </p>
+                  <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.16em] text-ink-faint">
+                    {t.course}
+                  </p>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+
+      {/* band 5 vs 9 */}
+      <section className="py-20 md:py-28">
+        <Container className="max-w-[760px]">
+          <SectionHead
+            align="center"
+            eyebrow="The difference"
+            title="What separates a Band 5 answer from a Band 8 one?"
+            lede="It is rarely knowledge. It is almost always structure, precision and nerve — all three of which respond to training."
+          />
+          <div className="mt-12 space-y-4">
+            {[
+              ["A Band 5 answer", "Rambles, repeats, hopes for the best."],
+              ["A Band 6.5 answer", "Structured, safe, a little memorised."],
+              ["A Band 8 answer", "Structured, precise, sounds like you on a good day."],
+            ].map(([label, text], i) => (
+              <Reveal key={label} delay={i * 0.07}>
+                <div className="flex flex-col gap-2 rounded-2xl border border-hairline px-6 py-5 sm:flex-row sm:items-baseline sm:gap-6">
+                  <span
+                    className={
+                      i === 2
+                        ? "font-display w-32 shrink-0 text-lg font-medium text-brand-deep"
+                        : "font-display w-32 shrink-0 text-lg font-medium text-ink"
+                    }
+                  >
+                    {label}
+                  </span>
+                  <span className="text-[15px] leading-relaxed text-ink-soft">
+                    {text}
+                  </span>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <Reveal delay={0.24}>
+            <p className="font-display mt-10 text-center text-lg italic leading-relaxed text-ink-soft">
+              “The exam doesn&apos;t test how much English you know. It tests
+              how well you use what you know —{" "}
+              <span className="text-ink">on one morning, under pressure.</span>”
+            </p>
+          </Reveal>
+        </Container>
+      </section>
+
+      <CtaPanel
+        eyebrow="Your entry next"
+        title={
+          <>
+            The next name on this wall{" "}
+            <em className="italic text-paper/90">hasn&apos;t enrolled yet.</em>
+          </>
+        }
+        lede="Start with the free diagnostic. Six weeks of boring consistency later, someone is writing your quote."
+        bn="পরের গল্পটা তোমার হতে পারে।"
+        primary={{ label: "Start with the free diagnostic", onClick: () => onNavigate("admission") }}
+        secondary={{ label: `Call ${BRAND.phone}`, href: BRAND.phoneHref }}
+      />
+    </>
   );
 }

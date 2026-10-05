@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Archivo, Noto_Serif_Bengali, Hind_Siliguri } from "next/font/google";
+import { Fraunces, Instrument_Sans, Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -10,28 +10,22 @@ const fraunces = Fraunces({
   axes: ["opsz"],
 });
 
-const archivo = Archivo({
-  variable: "--font-archivo",
+const instrument = Instrument_Sans({
+  variable: "--font-instrument",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const bnSerif = Noto_Serif_Bengali({
-  variable: "--font-bn-serif",
-  subsets: ["bengali"],
-  weight: ["400", "500", "600", "700", "800"],
+  style: ["normal", "italic"],
 });
 
 const hind = Hind_Siliguri({
   variable: "--font-hind",
   subsets: ["bengali", "latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
   title: "ICON English Center — IELTS, taught in Bangla",
   description:
-    "ICON English Center is Bangladesh's trusted companion for IELTS success. Bengali-first IELTS courses, free daily lessons, mock tests and personal mentoring for Listening, Reading, Writing & Speaking.",
+    "ICON English Center helps Bangladeshi students go from stuck-at-5 to Band 7.5 and beyond — Bengali-first IELTS teaching, feedback on every script, and mock tests under real pressure.",
   keywords: [
     "ICON English Center",
     "IELTS Bangladesh",
@@ -52,7 +46,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#e31e24",
+  themeColor: "#faf9f5",
   width: "device-width",
   initialScale: 1,
 };
@@ -65,7 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${fraunces.variable} ${archivo.variable} ${bnSerif.variable} ${hind.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${fraunces.variable} ${instrument.variable} ${hind.variable} font-sans antialiased bg-background text-foreground`}
       >
         {children}
         <Toaster />

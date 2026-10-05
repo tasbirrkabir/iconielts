@@ -1,0 +1,843 @@
+     1→"use client";
+     2→
+     3→import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+     4→import { useForm, type UseFormReturn } from "react-hook-form";
+     5→import { zodResolver } from "@hookform/resolvers/zod";
+     6→import { z } from "zod";
+     7→import { ArrowRight, Loader2 } from "lucide-react";
+     8→import { useToast } from "@/hooks/use-toast";
+     9→import {
+    10→  Btn,
+    11→  Kicker,
+    12→  PageHead,
+    13→  Reveal,
+    14→  RuleRow,
+    15→  SectionHead,
+    16→  Shell,
+    17→  Stamp,
+    18→} from "../kit";
+    19→import { BRAND, COURSES, type PageId } from "@/lib/site-data";
+    20→import { cn } from "@/lib/utils";
+    21→
+    22→/* ================================================================== */
+    23→/*  ADMISSION — the official application form                           */
+    24→/* ================================================================== */
+    25→
+    26→const formSchema = z.object({
+    27→  name: z
+    28→    .string()
+    29→    .min(2, "Two letters minimum — we need something to call you")
+    30→    .max(80, "That name is too long for the ledger"),
+    31→  phone: z
+    32→    .string()
+    33→    .min(6, "We call this number — please check it")
+    34→    .max(20, "Please check the phone number"),
+    35→  email: z.string().email("That email does not look right"),
+    36→  course: z.string().min(1, "Pick a course — or choose 'not sure'"),
+    37→  level: z.string().min(1, "Pick the closest — honesty helps"),
+    38→  mode: z.string().min(1, "Offline or online?"),
+    39→  message: z
+    40→    .string()
+    41→    .max(600, "Please keep it under 600 characters")
+    42→    .optional()
+    43→    .or(z.literal("")),
+    44→});
+    45→
+    46→type FormValues = z.infer<typeof formSchema>;
+    47→
+    48→const LEVELS = [
+    49→  "Complete beginner",
+    50→  "Band 4–5",
+    51→  "Band 5–6",
+    52→  "Band 6–7",
+    53→  "Not sure — assess me",
+    54→];
+    55→
+    56→const MODES = [
+    57→  {
+    58→    value: "Offline — Dhaka center",
+    59→    title: "Offline",
+    60→    sub: "Classroom batches at our Dhaka center",
+    61→  },
+    62→  {
+    63→    value: "Live online",
+    64→    title: "Live online",
+    65→    sub: "Live batches — join from anywhere",
+    66→  },
+    67→];
+    68→
+    69→const NEXT_STEPS = [
+    70→  {
+    71→    title: "The call — within 24 hours",
+    72→    copy: `Keep your phone on. The desk calls from ${BRAND.phone}.`,
+    73→  },
+    74→  {
+    75→    title: "Free demo class + diagnostic",
+    76→    copy: "We book you into a live batch and a full mock test — both free, both yours.",
+    77→  },
+    78→  {
+    79→    title: "Enroll only if it fits",
+    80→    copy: "If the plan makes sense, you join. If it doesn't, you keep the diagnosis and the roadmap.",
+    81→  },
+    82→];
+    83→
+    84→const PROCESS_STEPS = [
+    85→  {
+    86→    no: "01",
+    87→    title: "The call",
+    88→    tag: "Within 24 hours",
+    89→    copy: "A person — not a recording — calls from the admission desk. Fifteen minutes on your goal, your deadline, and where your English honestly stands.",
+    90→  },
+    91→  {
+    92→    no: "02",
+    93→    title: "Free demo class",
+    94→    tag: "No fee, no deposit",
+    95→    copy: "You sit in a real batch and watch how we teach. Bring your doubts; leave them there. If the teaching doesn't land, nobody chases you.",
+    96→  },
+    97→  {
+    98→    no: "03",
+    99→    title: "Diagnostic mock",
+   100→    tag: "Yours to keep either way",
+   101→    copy: "A full-length diagnostic under exam conditions, checked against band descriptors. You leave with an estimated band and a written plan.",
+   102→  },
+   103→];
+   104→
+   105→const inputCls =
+   106→  "h-[52px] w-full border-2 border-ink bg-paper px-4 text-[15px] font-medium text-ink transition-colors placeholder:font-normal placeholder:text-ink-faint/80 focus:border-brand focus:outline-none";
+   107→
+   108→/* Ruled application-sheet paper — same ledger ruling as PageHead, a touch darker */
+   109→const ruledPaper: CSSProperties = {
+   110→  backgroundImage:
+   111→    "repeating-linear-gradient(to bottom, transparent 0, transparent 31px, rgba(26,21,18,0.075) 31px, rgba(26,21,18,0.075) 32px)",
+   112→};
+   113→
+   114→const paperRuleCls =
+   115→  "border-paper/25 [&>span:first-child]:text-paper/50 [&>span:last-child]:text-paper";
+   116→
+   117→export function AdmissionPage({
+   118→  preselectedCourse,
+   119→  onNavigate,
+   120→}: {
+   121→  preselectedCourse?: string;
+   122→  onNavigate: (p: PageId) => void;
+   123→}) {
+   124→  const { toast } = useToast();
+   125→  const [refNo, setRefNo] = useState<string | null>(null);
+   126→  const panelRef = useRef<HTMLDivElement>(null);
+   127→
+   128→  const form = useForm<FormValues>({
+   129→    resolver: zodResolver(formSchema),
+   130→    defaultValues: {
+   131→      name: "",
+   132→      phone: "",
+   133→      email: "",
+   134→      course: preselectedCourse ?? "",
+   135→      level: "",
+   136→      mode: "",
+   137→      message: "",
+   138→    },
+   139→  });
+   140→
+   141→  // Arriving from a course page's "Enroll" button pre-fills the course
+   142→  useEffect(() => {
+   143→    if (preselectedCourse) {
+   144→      form.setValue("course", preselectedCourse);
+   145→    }
+   146→  }, [preselectedCourse, form]);
+   147→
+   148→  // Bring the receipt into view once the application is logged
+   149→  useEffect(() => {
+   150→    if (refNo) {
+   151→      panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+   152→    }
+   153→  }, [refNo]);
+   154→
+   155→  const onSubmit = async (values: FormValues) => {
+   156→    try {
+   157→      const res = await fetch("/api/admissions", {
+   158→        method: "POST",
+   159→        headers: { "Content-Type": "application/json" },
+   160→        body: JSON.stringify(values),
+   161→      });
+   162→      const data = (await res.json()) as {
+   163→        ok?: boolean;
+   164→        id?: string;
+   165→        error?: string;
+   166→      };
+   167→      if (!res.ok) throw new Error(data?.error || "Something went wrong");
+   168→      setRefNo(data?.id ? data.id.slice(-6).toUpperCase() : "logged");
+   169→      toast({
+   170→        title: "Application received",
+   171→        description:
+   172→          "The admission desk will call within 24 hours to book your free demo class.",
+   173→      });
+   174→    } catch (err) {
+   175→      toast({
+   176→        title: "Could not submit",
+   177→        description:
+   178→          err instanceof Error
+   179→            ? err.message
+   180→            : "Please try again, or reach us on WhatsApp.",
+   181→        variant: "destructive",
+   182→      });
+   183→    }
+   184→  };
+   185→
+   186→  const courseValue = form.watch("course");
+   187→  const levelValue = form.watch("level");
+   188→  const modeValue = form.watch("mode");
+   189→  const errors = form.formState.errors;
+   190→
+   191→  return (
+   192→    <>
+   193→      <PageHead
+   194→        no="06"
+   195→        bn="ভর্তি আবেদন"
+   196→        title={
+   197→          <>
+   198→            Three minutes now. A call
+   199→            <br />
+   200→            within <em className="italic text-brand">24 hours.</em>
+   201→          </>
+   202→        }
+   203→        lede="Fill the form and the admission desk calls you back — same day during office hours, 24 hours at worst. The call books your free demo class and a diagnostic mock test. No fees, no obligation, no expiring discounts."
+   204→        meta={[
+   205→          { label: "Response", value: "Within 24h" },
+   206→          { label: "Demo class", value: "Free" },
+   207→          { label: "Diagnostic", value: "Free" },
+   208→          { label: "Commitment", value: "None" },
+   209→        ]}
+   210→      />
+   211→
+   212→      <section className="bg-paper">
+   213→        <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+   214→          <SectionHead
+   215→            no="01"
+   216→            bn="আবেদন ফরম"
+   217→            en="The application"
+   218→            title={
+   219→              <>
+   220→                The easiest test you&apos;ll
+   221→                <br />
+   222→                take with <em className="italic text-brand">us.</em>
+   223→              </>
+   224→            }
+   225→            lede="Seven fields, one page, no account creation. The desk reads every application — usually within the hour during office time."
+   226→          />
+   227→
+   228→          <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[1.5fr_1fr] lg:gap-12">
+   229→            {/* the form / success panel */}
+   230→            <div ref={panelRef} className="scroll-mt-28">
+   231→              <Reveal>
+   232→              {refNo ? (
+   233→                <SuccessPanel
+   234→                  form={form}
+   235→                  refNo={refNo}
+   236→                  onNavigate={onNavigate}
+   237→                />
+   238→              ) : (
+   239→                <form
+   240→                  onSubmit={form.handleSubmit(onSubmit)}
+   241→                  noValidate
+   242→                  className="border-2 border-ink bg-card shadow-[8px_8px_0_0_rgba(26,21,18,0.9)]"
+   243→                >
+   244→                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1 bg-ink px-5 py-4 text-paper sm:px-7">
+   245→                    <span className="text-[11px] font-bold uppercase tracking-[0.22em]">
+   246→                      Application for admission
+   247→                    </span>
+   248→                    <span className="font-bn-serif text-[13px] font-medium text-paper/70">
+   249→                      ভর্তি আবেদন
+   250→                    </span>
+   251→                    <span className="font-display text-[10px] font-bold tracking-[0.24em] text-paper/50">
+   252→                      Form AD-01
+   253→                    </span>
+   254→                  </div>
+   255→
+   256→                  <div
+   257→                    style={ruledPaper}
+   258→                    className="grid gap-5 px-5 py-7 sm:grid-cols-2 sm:gap-6 sm:px-7 sm:py-9"
+   259→                  >
+   260→                    <Field
+   261→                      label="Full name"
+   262→                      htmlFor="adm-name"
+   263→                      error={errors.name?.message}
+   264→                      required
+   265→                    >
+   266→                      <input
+   267→                        id="adm-name"
+   268→                        type="text"
+   269→                        autoComplete="name"
+   270→                        placeholder="Your name"
+   271→                        className={inputCls}
+   272→                        {...form.register("name")}
+   273→                      />
+   274→                    </Field>
+   275→
+   276→                    <Field
+   277→                      label="Phone / WhatsApp"
+   278→                      htmlFor="adm-phone"
+   279→                      error={errors.phone?.message}
+   280→                      required
+   281→                      hint="We call this number"
+   282→                    >
+   283→                      <input
+   284→                        id="adm-phone"
+   285→                        type="tel"
+   286→                        inputMode="tel"
+   287→                        autoComplete="tel"
+   288→                        placeholder="01XXXXXXXXX"
+   289→                        className={inputCls}
+   290→                        {...form.register("phone")}
+   291→                      />
+   292→                    </Field>
+   293→
+   294→                    <Field
+   295→                      label="Email"
+   296→                      htmlFor="adm-email"
+   297→                      error={errors.email?.message}
+   298→                      required
+   299→                      className="sm:col-span-2"
+   300→                    >
+   301→                      <input
+   302→                        id="adm-email"
+   303→                        type="email"
+   304→                        autoComplete="email"
+   305→                        placeholder="you@example.com"
+   306→                        className={inputCls}
+   307→                        {...form.register("email")}
+   308→                      />
+   309→                    </Field>
+   310→
+   311→                    <Field
+   312→                      label="Course of interest"
+   313→                      htmlFor="adm-course"
+   314→                      error={errors.course?.message}
+   315→                      required
+   316→                    >
+   317→                      <div className="relative">
+   318→                        <select
+   319→                          id="adm-course"
+   320→                          className={cn(
+   321→                            inputCls,
+   322→                            "cursor-pointer appearance-none pr-10",
+   323→                            !courseValue && "text-ink-faint"
+   324→                          )}
+   325→                          {...form.register("course")}
+   326→                        >
+   327→                          <option value="" disabled>
+   328→                            Choose a course…
+   329→                          </option>
+   330→                          {COURSES.map((c) => (
+   331→                            <option key={c.slug} value={c.slug}>
+   332→                              {c.title} — {c.price}
+   333→                            </option>
+   334→                          ))}
+   335→                          <option value="not-sure">
+   336→                            Not sure — help me choose
+   337→                          </option>
+   338→                        </select>
+   339→                        <span
+   340→                          aria-hidden
+   341→                          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-ink-soft"
+   342→                        >
+   343→                          ▼
+   344→                        </span>
+   345→                      </div>
+   346→                    </Field>
+   347→
+   348→                    <Field
+   349→                      label="Current level"
+   350→                      htmlFor="adm-level"
+   351→                      error={errors.level?.message}
+   352→                      required
+   353→                      hint="Be honest — it helps"
+   354→                    >
+   355→                      <div className="relative">
+   356→                        <select
+   357→                          id="adm-level"
+   358→                          className={cn(
+   359→                            inputCls,
+   360→                            "cursor-pointer appearance-none pr-10",
+   361→                            !levelValue && "text-ink-faint"
+   362→                          )}
+   363→                          {...form.register("level")}
+   364→                        >
+   365→                          <option value="" disabled>
+   366→                            Where are you now?…
+   367→                          </option>
+   368→                          {LEVELS.map((l) => (
+   369→                            <option key={l} value={l}>
+   370→                              {l}
+   371→                            </option>
+   372→                          ))}
+   373→                        </select>
+   374→                        <span
+   375→                          aria-hidden
+   376→                          className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-ink-soft"
+   377→                        >
+   378→                          ▼
+   379→                        </span>
+   380→                      </div>
+   381→                    </Field>
+   382→
+   383→                    {/* mode — radio-style toggle buttons */}
+   384→                    <div className="sm:col-span-2">
+   385→                      <div className="flex items-baseline justify-between gap-3">
+   386→                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink">
+   387→                          Class mode<span className="ml-1 text-brand">*</span>
+   388→                        </span>
+   389→                        <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
+   390→                          Both get the same teachers
+   391→                        </span>
+   392→                      </div>
+   393→                      <div className="mt-2 grid gap-3 sm:grid-cols-2">
+   394→                        {MODES.map((m) => {
+   395→                          const active = modeValue === m.value;
+   396→                          return (
+   397→                            <button
+   398→                              key={m.value}
+   399→                              type="button"
+   400→                              aria-pressed={active}
+   401→                              onClick={() =>
+   402→                                form.setValue("mode", m.value, {
+   403→                                  shouldValidate: true,
+   404→                                })
+   405→                              }
+   406→                              className={cn(
+   407→                                "flex cursor-pointer items-center gap-3.5 border-2 px-4 py-3.5 text-left transition-colors duration-150",
+   408→                                active
+   409→                                  ? "border-ink bg-ink text-paper"
+   410→                                  : "border-ink/30 bg-paper text-ink hover:border-ink"
+   411→                              )}
+   412→                            >
+   413→                              <span
+   414→                                aria-hidden
+   415→                                className={cn(
+   416→                                  "flex h-4 w-4 shrink-0 items-center justify-center border-2",
+   417→                                  active
+   418→                                    ? "border-paper bg-brand"
+   419→                                    : "border-ink/40"
+   420→                                )}
+   421→                              >
+   422→                                {active ? (
+   423→                                  <span className="h-1.5 w-1.5 bg-paper" />
+   424→                                ) : null}
+   425→                              </span>
+   426→                              <span className="min-w-0">
+   427→                                <span className="block text-sm font-bold uppercase tracking-[0.08em]">
+   428→                                  {m.title}
+   429→                                </span>
+   430→                                <span
+   431→                                  className={cn(
+   432→                                    "mt-0.5 block text-xs",
+   433→                                    active ? "text-paper/60" : "text-ink-soft"
+   434→                                  )}
+   435→                                >
+   436→                                  {m.sub}
+   437→                                </span>
+   438→                              </span>
+   439→                            </button>
+   440→                          );
+   441→                        })}
+   442→                      </div>
+   443→                      {errors.mode?.message ? (
+   444→                        <p
+   445→                          role="alert"
+   446→                          className="mt-1.5 flex items-baseline gap-1.5 text-[11px] font-bold text-brand-deep"
+   447→                        >
+   448→                          <span
+   449→                            aria-hidden
+   450→                            className="text-[8px] leading-none"
+   451→                          >
+   452→                            ■
+   453→                          </span>
+   454→                          {errors.mode.message}
+   455→                        </p>
+   456→                      ) : null}
+   457→                    </div>
+   458→
+   459→                    <Field
+   460→                      label="Anything we should know?"
+   461→                      htmlFor="adm-message"
+   462→                      error={errors.message?.message}
+   463→                      hint="Optional"
+   464→                      className="sm:col-span-2"
+   465→                    >
+   466→                      <textarea
+   467→                        id="adm-message"
+   468→                        rows={4}
+   469→                        placeholder="Target band, exam date, questions — anything."
+   470→                        className={cn(inputCls, "h-auto resize-none py-3.5 leading-relaxed")}
+   471→                        {...form.register("message")}
+   472→                      />
+   473→                    </Field>
+   474→
+   475→                    <div className="sm:col-span-2">
+   476→                      <button
+   477→                        type="submit"
+   478→                        disabled={form.formState.isSubmitting}
+   479→                        className="group/btn inline-flex w-full cursor-pointer select-none items-center justify-center gap-3 border-2 border-ink bg-brand px-8 py-4 font-sans text-[13px] font-bold uppercase tracking-[0.14em] text-paper shadow-[4px_4px_0_0_#1a1512] transition-colors duration-200 hover:bg-ink hover:shadow-[4px_4px_0_0_#e31e24] disabled:cursor-wait disabled:opacity-70 disabled:hover:bg-brand disabled:hover:shadow-[4px_4px_0_0_#1a1512]"
+   480→                      >
+   481→                        {form.formState.isSubmitting ? (
+   482→                          <>
+   483→                            <Loader2 className="h-4 w-4 animate-spin" />
+   484→                            Submitting…
+   485→                          </>
+   486→                        ) : (
+   487→                          <>
+   488→                            Submit application
+   489→                            <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1" />
+   490→                          </>
+   491→                        )}
+   492→                      </button>
+   493→                      <p className="mt-5 border-t border-dashed border-ink/25 pt-4 text-center text-[11px] font-semibold leading-relaxed text-ink-soft">
+   494→                        No payment is asked on this form — or anywhere else on
+   495→                        this site. Never pay anyone claiming to guarantee a
+   496→                        band score.
+   497→                      </p>
+   498→                    </div>
+   499→                  </div>
+   500→                </form>
+   501→              )}
+   502→              </Reveal>
+   503→            </div>
+   504→
+   505→            {/* aside — the contact ledger */}
+   506→            <div className="flex flex-col gap-8">
+   507→              <Reveal delay={0.08}>
+   508→                <aside className="border-2 border-ink bg-ink text-paper">
+   509→                  <div className="bg-grain relative">
+   510→                    <div className="relative p-6 sm:p-7">
+   511→                      <Kicker tone="paper">The admission desk</Kicker>
+   512→                      <p className="font-bn-serif mt-4 text-lg font-medium leading-snug text-paper/90">
+   513→                        সরাসরি কথা বলতে চাও?
+   514→                      </p>
+   515→                      <h3 className="font-display mt-2 text-2xl font-semibold leading-tight text-paper">
+   516→                        We actually pick up the phone.
+   517→                      </h3>
+   518→                      <p className="mt-3 text-[13px] leading-relaxed text-paper/60">
+   519→                        Calling beats typing when you have ten questions. Ring
+   520→                        the desk, or message on WhatsApp — a human replies, not
+   521→                        a bot.
+   522→                      </p>
+   523→                      <div className="mt-5 border-t border-paper/20 pt-1">
+   524→                        <RuleRow
+   525→                          label="Phone"
+   526→                          value={
+   527→                            <a className="link-sweep" href={BRAND.phoneHref}>
+   528→                              {BRAND.phone}
+   529→                            </a>
+   530→                          }
+   531→                          className={paperRuleCls}
+   532→                        />
+   533→                        <RuleRow
+   534→                          label="WhatsApp"
+   535→                          value={
+   536→                            <a
+   537→                              className="link-sweep"
+   538→                              href={BRAND.whatsappHref}
+   539→                              target="_blank"
+   540→                              rel="noopener noreferrer"
+   541→                            >
+   542→                              {BRAND.whatsapp}
+   543→                            </a>
+   544→                          }
+   545→                          className={paperRuleCls}
+   546→                        />
+   547→                        <RuleRow
+   548→                          label="Email"
+   549→                          value={
+   550→                            <a
+   551→                              className="link-sweep break-all"
+   552→                              href={BRAND.emailHref}
+   553→                            >
+   554→                              {BRAND.email}
+   555→                            </a>
+   556→                          }
+   557→                          className={paperRuleCls}
+   558→                        />
+   559→                        <RuleRow
+   560→                          label="Hours"
+   561→                          value={BRAND.hours}
+   562→                          className={paperRuleCls}
+   563→                        />
+   564→                        <RuleRow
+   565→                          label="Desk"
+   566→                          value={BRAND.location}
+   567→                          className={paperRuleCls}
+   568→                        />
+   569→                      </div>
+   570→                      <div className="mt-6 grid gap-3">
+   571→                        <Btn
+   572→                          variant="ghost-paper"
+   573→                          href={BRAND.phoneHref}
+   574→                          className="w-full"
+   575→                        >
+   576→                          Call the desk
+   577→                        </Btn>
+   578→                        <Btn
+   579→                          variant="ghost-paper"
+   580→                          href={BRAND.whatsappHref}
+   581→                          external
+   582→                          className="w-full"
+   583→                        >
+   584→                          WhatsApp us
+   585→                        </Btn>
+   586→                      </div>
+   587→                    </div>
+   588→                  </div>
+   589→                </aside>
+   590→              </Reveal>
+   591→
+   592→              <Reveal delay={0.14}>
+   593→                <div className="border-2 border-ink bg-card p-6">
+   594→                  <Kicker>Not ready yet?</Kicker>
+   595→                  <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+   596→                    Watch a full class free on YouTube first — same teachers,
+   597→                    same method. The form will still be here when the exam
+   598→                    date gets close.
+   599→                  </p>
+   600→                  <div className="mt-5 flex flex-wrap gap-3">
+   601→                    <Btn
+   602→                      variant="outline"
+   603→                      size="sm"
+   604→                      onClick={() => onNavigate("lessons")}
+   605→                    >
+   606→                      Free lessons
+   607→                    </Btn>
+   608→                    <Btn
+   609→                      variant="outline"
+   610→                      size="sm"
+   611→                      onClick={() => onNavigate("courses")}
+   612→                    >
+   613→                      View programs
+   614→                    </Btn>
+   615→                  </div>
+   616→                </div>
+   617→              </Reveal>
+   618→            </div>
+   619→          </div>
+   620→        </Shell>
+   621→      </section>
+   622→
+   623→      <WhatNext />
+   624→    </>
+   625→  );
+   626→}
+   627→
+   628→/* ------------------------------------------------------------------ */
+   629→/*  Field — official-form field wrapper                                */
+   630→/* ------------------------------------------------------------------ */
+   631→
+   632→function Field({
+   633→  label,
+   634→  htmlFor,
+   635→  error,
+   636→  required,
+   637→  hint,
+   638→  className,
+   639→  children,
+   640→}: {
+   641→  label: string;
+   642→  htmlFor?: string;
+   643→  error?: string;
+   644→  required?: boolean;
+   645→  hint?: string;
+   646→  className?: string;
+   647→  children: ReactNode;
+   648→}) {
+   649→  return (
+   650→    <div className={className}>
+   651→      <label
+   652→        htmlFor={htmlFor}
+   653→        className="flex items-baseline justify-between gap-3"
+   654→      >
+   655→        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink">
+   656→          {label}
+   657→          {required ? <span className="ml-1 text-brand">*</span> : null}
+   658→        </span>
+   659→        {hint ? (
+   660→          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
+   661→            {hint}
+   662→          </span>
+   663→        ) : null}
+   664→      </label>
+   665→      <div className="mt-2">{children}</div>
+   666→      {error ? (
+   667→        <p
+   668→          role="alert"
+   669→          className="mt-1.5 flex items-baseline gap-1.5 text-[11px] font-bold text-brand-deep"
+   670→        >
+   671→          <span aria-hidden className="text-[8px] leading-none">
+   672→            ■
+   673→          </span>
+   674→          {error}
+   675→        </p>
+   676→      ) : null}
+   677→    </div>
+   678→  );
+   679→}
+   680→
+   681→/* ------------------------------------------------------------------ */
+   682→/*  Success panel — replaces the form after a 201                      */
+   683→/* ------------------------------------------------------------------ */
+   684→
+   685→function SuccessPanel({
+   686→  form,
+   687→  refNo,
+   688→  onNavigate,
+   689→}: {
+   690→  form: UseFormReturn<FormValues>;
+   691→  refNo: string;
+   692→  onNavigate: (p: PageId) => void;
+   693→}) {
+   694→  const courseSlug = form.getValues("course");
+   695→  const courseLabel =
+   696→    COURSES.find((c) => c.slug === courseSlug)?.title ??
+   697→    (courseSlug === "not-sure" ? "Not sure — needs guidance" : courseSlug);
+   698→
+   699→  return (
+   700→    <div className="border-2 border-ink bg-card shadow-[8px_8px_0_0_rgba(26,21,18,0.9)]">
+   701→      <div className="flex items-center justify-between gap-x-6 bg-ink px-5 py-4 text-paper sm:px-7">
+   702→        <span className="text-[11px] font-bold uppercase tracking-[0.22em]">
+   703→          Application received
+   704→        </span>
+   705→        <span className="font-display text-[10px] font-bold tracking-[0.24em] text-paper/50">
+   706→          Form AD-01
+   707→        </span>
+   708→      </div>
+   709→
+   710→      <div
+   711→        style={ruledPaper}
+   712→        className="relative px-5 py-8 sm:px-8 sm:py-10"
+   713→      >
+   714→        <Reveal>
+   715→          <Stamp>Received</Stamp>
+   716→          <h3 className="font-display mt-6 max-w-xl text-2xl font-semibold leading-tight tracking-tight text-ink sm:text-3xl">
+   717→            <span className="font-bn-serif font-medium">আবেদন পৌঁছেছে</span> —
+   718→            Application № {refNo}.
+   719→          </h3>
+   720→          <p className="mt-3 max-w-lg text-sm leading-relaxed text-ink-soft">
+   721→            The desk has it. Keep your phone on — a call from{" "}
+   722→            <a
+   723→              href={BRAND.phoneHref}
+   724→              className="link-sweep font-semibold text-ink"
+   725→            >
+   726→              {BRAND.phone}
+   727→            </a>{" "}
+   728→            comes within 24 hours.
+   729→          </p>
+   730→        </Reveal>
+   731→
+   732→        <Reveal delay={0.08}>
+   733→          <ol className="mt-8 border-t-2 border-ink">
+   734→            {NEXT_STEPS.map((s, i) => (
+   735→              <li
+   736→                key={s.title}
+   737→                className="grid grid-cols-[2.6rem_1fr] gap-x-4 border-b border-dashed border-ink/25 py-4"
+   738→              >
+   739→                <span className="font-display pt-0.5 text-sm font-bold tracking-[0.16em] text-brand">
+   740→                  {String(i + 1).padStart(2, "0")}
+   741→                </span>
+   742→                <span>
+   743→                  <span className="font-display block text-base font-semibold text-ink">
+   744→                    {s.title}
+   745→                  </span>
+   746→                  <span className="mt-1 block text-[13px] leading-relaxed text-ink-soft">
+   747→                    {s.copy}
+   748→                  </span>
+   749→                </span>
+   750→              </li>
+   751→            ))}
+   752→          </ol>
+   753→        </Reveal>
+   754→
+   755→        <Reveal delay={0.14}>
+   756→          <div className="mt-8 border-2 border-ink bg-paper">
+   757→            <div className="border-b border-ink/20 bg-paper-deep/60 px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.18em] text-ink-soft">
+   758→              For your records
+   759→            </div>
+   760→            <div className="px-4 py-1">
+   761→              <RuleRow label="Name" value={form.getValues("name")} />
+   762→              <RuleRow label="Phone" value={form.getValues("phone")} />
+   763→              <RuleRow label="Course" value={courseLabel} />
+   764→              <RuleRow label="Mode" value={form.getValues("mode")} />
+   765→            </div>
+   766→          </div>
+   767→        </Reveal>
+   768→
+   769→        <Reveal delay={0.2}>
+   770→          <div className="mt-8 flex flex-wrap gap-4">
+   771→            <Btn onClick={() => onNavigate("lessons")}>
+   772→              Watch free lessons meanwhile
+   773→            </Btn>
+   774→            <Btn variant="outline" onClick={() => onNavigate("home")}>
+   775→              Back to home
+   776→            </Btn>
+   777→          </div>
+   778→        </Reveal>
+   779→      </div>
+   780→    </div>
+   781→  );
+   782→}
+   783→
+   784→/* ------------------------------------------------------------------ */
+   785→/*  §02 · What happens next — the three-step process                   */
+   786→/* ------------------------------------------------------------------ */
+   787→
+   788→function WhatNext() {
+   789→  return (
+   790→    <section className="border-t-2 border-ink bg-paper-deep">
+   791→      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+   792→        <SectionHead
+   793→          no="02"
+   794→          bn="এরপর কী হবে"
+   795→          en="What happens next"
+   796→          title={
+   797→            <>
+   798→              From form to first class —
+   799→              <br />
+   800→              in <em className="italic text-brand">three</em> steps.
+   801→            </>
+   802→          }
+   803→          lede="No black box. This is exactly what happens after you press submit."
+   804→        />
+   805→
+   806→        <div className="mt-12 grid border-2 border-ink bg-paper sm:grid-cols-3">
+   807→          {PROCESS_STEPS.map((s, i) => (
+   808→            <Reveal
+   809→              key={s.no}
+   810→              delay={i * 0.07}
+   811→              className={cn(
+   812→                "border-ink",
+   813→                i !== 0 && "border-t sm:border-t-0 sm:border-l"
+   814→              )}
+   815→            >
+   816→              <article className="flex h-full flex-col p-6 sm:p-8">
+   817→                <div className="flex items-baseline justify-between gap-3">
+   818→                  <span className="font-display text-4xl font-bold leading-none text-brand sm:text-5xl">
+   819→                    {s.no}
+   820→                  </span>
+   821→                  <span className="text-right text-[9px] font-bold uppercase tracking-[0.18em] text-ink-faint">
+   822→                    {s.tag}
+   823→                  </span>
+   824→                </div>
+   825→                <h3 className="font-display mt-5 text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+   826→                  {s.title}
+   827→                </h3>
+   828→                <p className="mt-3 flex-1 text-[13px] leading-relaxed text-ink-soft">
+   829→                  {s.copy}
+   830→                </p>
+   831→                <span
+   832→                  aria-hidden
+   833→                  className="mt-6 block h-[3px] w-10 bg-brand"
+   834→                />
+   835→              </article>
+   836→            </Reveal>
+   837→          ))}
+   838→        </div>
+   839→      </Shell>
+   840→    </section>
+   841→  );
+   842→}
+   843→

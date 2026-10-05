@@ -1,145 +1,156 @@
 "use client";
 
 import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
-import { BRAND, COURSES, NAV_ITEMS, SOCIALS, type PageId } from "@/lib/site-data";
+import { BRAND, COURSES, SOCIALS, type PageId } from "@/lib/site-data";
+import { Container } from "./kit";
 
 /* ================================================================== */
-/*  Colophon footer — ink slab, huge masthead wordmark                 */
+/*  Footer — light, quiet, stuck to the bottom                         */
 /* ================================================================== */
 
-export function Footer({ onNavigate }: { onNavigate: (p: PageId) => void }) {
-  const year = new Date().getFullYear();
+const EXPLORE: { id: PageId; label: string }[] = [
+  { id: "about", label: "About" },
+  { id: "courses", label: "Courses" },
+  { id: "lessons", label: "Free Lessons" },
+  { id: "success", label: "Success Stories" },
+  { id: "admission", label: "Admission" },
+];
 
+export function Footer({
+  onNavigate,
+}: {
+  onNavigate: (p: PageId) => void;
+}) {
   return (
-    <footer className="mt-auto border-t-2 border-ink bg-ink text-paper">
-      {/* top grid */}
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-0 border-x border-paper/10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-        {/* mission */}
-        <div className="border-b border-paper/15 px-6 py-10 sm:border-r lg:border-b-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-brand">
-            Our promise
-          </p>
-          <p className="font-bn-serif mt-5 text-lg font-medium leading-relaxed text-paper">
-            বাংলায় সহজে স্বপ্নের IELTS Band Score অর্জনের নির্ভরযোগ্য সঙ্গী।
-          </p>
-          <p className="mt-4 max-w-xs text-[13px] leading-relaxed text-paper/60">
-            Your trusted companion for the IELTS band score of your dreams —
-            taught in Bangla, from Bangladesh.
-          </p>
-        </div>
+    <footer className="mt-auto border-t border-hairline bg-paper">
+      <Container className="py-14 md:py-16">
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_1.3fr] md:gap-8">
+          {/* brand */}
+          <div className="max-w-xs">
+            <div className="flex items-baseline gap-2.5">
+              <span className="font-display text-xl font-semibold tracking-[-0.01em] text-ink">
+                ICON
+                <span aria-hidden className="ml-0.5 text-brand">
+                  .
+                </span>
+              </span>
+              <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-faint">
+                English Center
+              </span>
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-ink-soft">
+              IELTS, taught in Bangla — the trusted companion for the band
+              score of your dreams.
+            </p>
+            <p className="font-bengali mt-3 text-sm text-ink-faint">
+              {BRAND.taglineBn}
+            </p>
+            <ul className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
+              {SOCIALS.slice(0, 5).map((s) => (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-1 text-[13px] text-ink-soft transition-colors hover:text-ink"
+                  >
+                    <span className="link-underline">{s.label}</span>
+                    <ArrowUpRight
+                      aria-hidden
+                      className="h-3 w-3 opacity-0 transition-all duration-200 group-hover:opacity-100"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* navigate */}
-        <nav className="border-b border-paper/15 px-6 py-10 lg:border-r lg:border-b-0" aria-label="Footer">
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-paper/50">
-            Index
-          </p>
-          <ul className="mt-5 space-y-1">
-            {NAV_ITEMS.map((item, i) => (
-              <li key={item.id}>
-                <button
-                  type="button"
-                  onClick={() => onNavigate(item.id)}
-                  className="group flex cursor-pointer items-baseline gap-3 py-1.5 text-sm font-semibold text-paper/80 transition-colors hover:text-brand"
+          {/* explore */}
+          <nav aria-label="Footer">
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-faint">
+              Explore
+            </h3>
+            <ul className="mt-5 space-y-3">
+              {EXPLORE.map((l) => (
+                <li key={l.id}>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(l.id)}
+                    className="cursor-pointer text-sm text-ink-soft transition-colors hover:text-ink"
+                  >
+                    {l.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* programs */}
+          <div>
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-faint">
+              Programs
+            </h3>
+            <ul className="mt-5 space-y-3">
+              {COURSES.map((c) => (
+                <li key={c.slug}>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate("courses")}
+                    className="cursor-pointer text-left text-sm text-ink-soft transition-colors hover:text-ink"
+                  >
+                    {c.title}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* contact */}
+          <div>
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-faint">
+              Contact
+            </h3>
+            <ul className="mt-5 space-y-3.5 text-sm">
+              <li>
+                <a
+                  href={BRAND.phoneHref}
+                  className="inline-flex items-center gap-2.5 text-ink-soft transition-colors hover:text-ink"
                 >
-                  <span className="font-display text-[10px] font-bold tracking-[0.2em] text-paper/30 group-hover:text-brand">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {item.label}
-                </button>
+                  <Phone className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
+                  {BRAND.phone}
+                </a>
               </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* courses */}
-        <div className="border-b border-paper/15 px-6 py-10 lg:border-r lg:border-b-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-paper/50">
-            Programs
-          </p>
-          <ul className="mt-5 space-y-1">
-            {COURSES.slice(0, 6).map((c) => (
-              <li key={c.slug}>
-                <button
-                  type="button"
-                  onClick={() => onNavigate("courses")}
-                  className="cursor-pointer py-1.5 text-left text-sm font-semibold text-paper/80 transition-colors hover:text-brand"
+              <li>
+                <a
+                  href={BRAND.emailHref}
+                  className="inline-flex items-center gap-2.5 break-all text-ink-soft transition-colors hover:text-ink"
                 >
-                  {c.title}
-                </button>
+                  <Mail className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
+                  {BRAND.email}
+                </a>
               </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* contact */}
-        <div className="px-6 py-10">
-          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-paper/50">
-            Admission desk
-          </p>
-          <ul className="mt-5 space-y-3.5 text-sm">
-            <li>
-              <a
-                href={BRAND.phoneHref}
-                className="flex items-center gap-3 font-semibold text-paper transition-colors hover:text-brand"
-              >
-                <Phone className="h-4 w-4 shrink-0 text-brand" />
-                {BRAND.phone}
-              </a>
-            </li>
-            <li>
-              <a
-                href={BRAND.emailHref}
-                className="flex items-center gap-3 font-semibold text-paper transition-colors hover:text-brand"
-              >
-                <Mail className="h-4 w-4 shrink-0 text-brand" />
-                <span className="break-all">{BRAND.email}</span>
-              </a>
-            </li>
-            <li className="flex items-center gap-3 font-semibold text-paper">
-              <MapPin className="h-4 w-4 shrink-0 text-brand" />
-              {BRAND.location}
-            </li>
-          </ul>
-          <div className="mt-6 flex flex-wrap gap-x-4 gap-y-2">
-            {SOCIALS.map((s) => (
-              <a
-                key={s.label}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group inline-flex items-center gap-1 text-[11px] font-bold uppercase tracking-[0.14em] text-paper/50 transition-colors hover:text-brand"
-              >
-                {s.label}
-                <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
-              </a>
-            ))}
+              <li className="flex items-center gap-2.5 text-ink-soft">
+                <MapPin className="h-3.5 w-3.5 shrink-0" strokeWidth={1.5} />
+                {BRAND.location}
+              </li>
+              <li className="text-ink-faint">{BRAND.hours}</li>
+            </ul>
           </div>
         </div>
-      </div>
+      </Container>
 
-      {/* masthead wordmark */}
-      <div className="border-t border-paper/15">
-        <div className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6">
-          <p
-            aria-hidden
-            className="font-display select-none text-center text-[13.5vw] font-black uppercase leading-[0.85] tracking-tight text-transparent sm:text-[11vw] lg:text-[9.5rem]"
-            style={{ WebkitTextStroke: "1.5px rgba(243, 239, 228, 0.35)" }}
-          >
-            ICON
-          </p>
+      {/* quiet watermark */}
+      <div aria-hidden className="select-none overflow-hidden">
+        <div className="font-display -mb-[0.16em] text-center text-[clamp(5rem,17vw,13rem)] font-semibold leading-none tracking-[-0.02em] text-ink/[0.045]">
+          ICON
         </div>
       </div>
 
-      {/* colophon */}
-      <div className="border-t border-paper/15">
-        <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 border-x border-paper/10 px-4 py-5 text-[11px] font-semibold uppercase tracking-[0.16em] text-paper/40 sm:flex-row sm:px-6">
-          <span>
-            © {year} {BRAND.name} · Dhaka, Bangladesh
-          </span>
-          <span className="font-bn-serif normal-case tracking-[0.08em] text-paper/50">
-            শেখা যাক, বাংলায় — স্বপ্ন পূরণ হোক, বিশ্বে।
-          </span>
-        </div>
+      <div className="border-t border-hairline">
+        <Container className="flex flex-col items-center justify-between gap-3 py-6 text-[13px] text-ink-faint sm:flex-row">
+          <p>© {new Date().getFullYear()} ICON English Center. All rights reserved.</p>
+          <p className="font-bengali text-xs">ঢাকা, বাংলাদেশ — Dhaka, Bangladesh</p>
+        </Container>
       </div>
     </footer>
   );
