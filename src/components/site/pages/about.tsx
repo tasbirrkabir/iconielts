@@ -1,26 +1,23 @@
 "use client";
 
-import Image from "next/image";
 import {
-  ArrowRight,
-  BookHeart,
-  Compass,
-  Facebook,
-  HeartHandshake,
-  Instagram,
-  Music2,
-  Target,
-  Users,
-  Youtube,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "../page-header";
-import { Reveal } from "../reveal";
-import { Counter } from "../counter";
-import { SectionHeading } from "../section-heading";
-import { BRAND, type PageId } from "@/lib/site-data";
+  Btn,
+  Frame,
+  Kicker,
+  PageHead,
+  Reveal,
+  RuleRow,
+  SectionHead,
+  Shell,
+  Stamp,
+  Ticker,
+} from "../kit";
+import { BRAND, SOCIALS, type PageId } from "@/lib/site-data";
+import { cn } from "@/lib/utils";
 
-/* ---------------------------------------------------------------- */
+/* ================================================================== */
+/*  ABOUT — the institute's story, told like a magazine feature        */
+/* ================================================================== */
 
 export function AboutPage({
   onNavigate,
@@ -29,310 +26,485 @@ export function AboutPage({
 }) {
   return (
     <>
-      <PageHeader
-        page="about"
-        eyebrow="About ICON"
+      <PageHead
+        no="02"
+        bn="আমাদের কথা"
         title={
           <>
-            Built by teachers who were once{" "}
-            <span className="text-gradient-gold">stuck at Band 5</span> too.
+            A classroom built for the way Bangladesh{" "}
+            <em className="italic text-brand">actually</em> learns.
           </>
         }
-        lead="ICON English Center began with a simple frustration: brilliant Bangladeshi students losing opportunities because English was taught in a way that confused them. We rebuilt the process from zero."
-        bn={BRAND.taglineBn}
-        image="/images/about-story.png"
-        imageAlt="An ICON English Center instructor teaching English in a classroom"
+        lede="ICON English Center began with a simple refusal: we stopped pretending that a Dhaka student and a London student need the same explanation."
+        meta={[
+          { label: "Base", value: "Dhaka, Bangladesh" },
+          { label: "Focus", value: "IELTS in Bangla" },
+          { label: "Community", value: "8,500+ learners" },
+          { label: "Open lessons", value: "59+ videos" },
+        ]}
       />
+      <OriginStory />
+      <Ticker
+        slow
+        items={[
+          "Explain in Bangla",
+          "Test in English",
+          "No blind practice",
+          "Free first, always",
+          "Feedback on everything",
+        ]}
+      />
+      <Manifesto />
+      <Faculty />
+      <WeeklyRhythm />
+      <ClosingSlab onNavigate={onNavigate} />
+    </>
+  );
+}
 
-      {/* Story */}
-      <section className="bg-background py-16 sm:py-24">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2">
-          <Reveal>
-            <div className="relative">
-              <div className="overflow-hidden rounded-3xl border border-border shadow-2xl shadow-ink/10">
-                <Image
-                  src="/images/about-story.png"
-                  alt="English class in session at ICON English Center"
-                  width={1344}
-                  height={768}
-                  className="aspect-[7/5] w-full object-cover"
-                />
-              </div>
-              <div className="absolute -bottom-6 -right-4 rounded-2xl bg-brand p-5 text-white shadow-2xl shadow-brand/40 sm:-right-6">
-                <p className="font-display text-3xl font-extrabold leading-none">
-                  8,500+
-                </p>
-                <p className="mt-1.5 text-xs font-medium text-white/80">
-                  learners in our community
-                </p>
-              </div>
-            </div>
-          </Reveal>
+/* ------------------------------------------------------------------ */
+/*  §01 — Origin story                                                 */
+/* ------------------------------------------------------------------ */
 
-          <div>
-            <SectionHeading
-              align="left"
-              className="mb-6"
-              eyebrow="Our story"
-              title={
-                <>
-                  We teach the class{" "}
-                  <span className="text-gradient-brand">we needed</span> as
-                  students.
-                </>
-              }
-            />
+function OriginStory() {
+  return (
+    <section className="bg-paper">
+      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead
+          no="01"
+          bn="শুরুর গল্প"
+          en="Origin"
+          title={
+            <>
+              It started with the fear
+              <br />
+              of <em className="italic text-brand">self-preparation.</em>
+            </>
+          }
+        />
+
+        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-[1.35fr_1fr] lg:gap-16">
+          {/* feature text */}
+          <div className="max-w-2xl">
+            <Reveal>
+              <p className="font-display text-xl font-medium leading-relaxed text-ink sm:text-2xl">
+                Ask any IELTS candidate in Bangladesh what scares them most, and
+                few will say the exam itself. They will say the loneliness of
+                preparing for it — the creeping doubt of studying alone at
+                midnight with a PDF and no one to ask.
+              </p>
+            </Reveal>
             <Reveal delay={0.08}>
-              <div className="flex flex-col gap-4 text-[15px] leading-relaxed text-muted-foreground">
+              <div className="mt-6 space-y-5 text-[15px] leading-relaxed text-ink-soft">
                 <p>
-                  Most of our team grew up memorizing grammar rules without ever
-                  holding a conversation. When we finally prepared for IELTS
-                  ourselves, we discovered that the exam rewards{" "}
-                  <span className="font-semibold text-ink">strategy</span> and{" "}
-                  <span className="font-semibold text-ink">feedback</span> — not
-                  memorization.
+                  Our teachers knew that fear by name —{" "}
+                  <span className="font-bn-serif font-semibold text-ink">
+                    Self Preparation নিয়ে ভীতি
+                  </span>
+                  . They had watched brilliant students lose a full band to it:
+                  grammar half-repaired, vocabulary memorised but never used,
+                  time management collapsing in the reading hour. Not a
+                  knowledge problem. A system problem.
                 </p>
                 <p>
-                  So ICON English Center was built around three promises:
-                  explain everything in Bangla so nothing stays confusing, give
-                  feedback on every piece of work, and publish as much
-                  high-quality teaching as we can{" "}
-                  <span className="font-semibold text-brand">completely free</span>.
+                  So ICON was built as the opposite of studying alone. Every
+                  strategy is explained in Bangla first — the language you think
+                  in — so nothing stays fuzzy. Then you practice exactly like
+                  the real exam, in English, under real timing, with a teacher
+                  who reads your writing and tells you the truth about it.
                 </p>
                 <p>
-                  Today our free lessons reach students across Bangladesh every
-                  day, and our courses carry them from Band 5 to the scores that
-                  unlock scholarships, visas and careers abroad.
+                  The free part came naturally. A daily grammar fix on Facebook
+                  became a YouTube channel of full-length classes, and the
+                  channel became a community of{" "}
+                  <strong className="font-semibold text-ink">
+                    8,500+ learners
+                  </strong>{" "}
+                  who tag each other in vocabulary posts at 1 a.m. We kept it
+                  free because education that actually reaches people shouldn&apos;t
+                  start with a paywall.
+                </p>
+                <p>
+                  What we charge for is the part YouTube can&apos;t give: a
+                  roadmap with your name on it, feedback on every script, and
+                  mock tests with an examiner&apos;s patience and a
+                  stopwatch&apos;s mercy.
                 </p>
               </div>
             </Reveal>
-            <Reveal delay={0.16} className="mt-8">
-              <Button
-                onClick={() => onNavigate("success")}
-                size="lg"
-                className="h-12 rounded-full bg-brand px-6 text-[15px] font-bold shadow-xl shadow-brand/25 transition-all hover:scale-[1.03] hover:bg-brand-deep"
-              >
-                See student results
-                <ArrowRight className="ml-1 h-4.5 w-4.5" />
-              </Button>
+
+            <Reveal delay={0.14}>
+              <blockquote className="mt-10 border-l-2 border-brand pl-6">
+                <p className="font-display text-2xl font-medium italic leading-snug text-ink">
+                  “Chains of grammar, fear, vocabulary and time — every one of
+                  them breaks. Just not all at once, and not alone.”
+                </p>
+                <cite className="mt-3 block text-[11px] font-bold uppercase not-italic tracking-[0.18em] text-ink-faint">
+                  — The ICON teaching note, batch one
+                </cite>
+              </blockquote>
+            </Reveal>
+          </div>
+
+          {/* side column */}
+          <div className="space-y-8">
+            <Reveal delay={0.1}>
+              <div className="relative">
+                <Frame
+                  src="/images/about-story.png"
+                  alt="An ICON English Center instructor explaining grammar at the whiteboard"
+                  caption="Grammar clinic — Saturday batch, Dhaka"
+                  ratio="4/3"
+                  className="shadow-[10px_10px_0_0_rgba(26,21,18,0.9)]"
+                />
+                <Stamp className="absolute -right-4 -top-6 bg-paper px-3 py-2 sm:-right-6">
+                  Since batch one
+                </Stamp>
+              </div>
+            </Reveal>
+            <Reveal delay={0.16}>
+              <div className="border-2 border-ink bg-card p-6 sm:p-7">
+                <Kicker>The numbers we watch</Kicker>
+                <div className="mt-4">
+                  <RuleRow label="Facebook family" value="8,500+ followers" />
+                  <RuleRow label="Open classes" value="59+ on YouTube" />
+                  <RuleRow label="Views across lessons" value="34,000+" />
+                  <RuleRow label="Daily fix" value="Free Grammar Fix — every day" />
+                  <RuleRow label="Charge for" value="Feedback, roadmap, mocks" className="border-b-0" />
+                </div>
+              </div>
             </Reveal>
           </div>
         </div>
-      </section>
+      </Shell>
+    </section>
+  );
+}
 
-      {/* Mission / Vision / Values */}
-      <section className="bg-cream py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <SectionHeading
-            eyebrow="What drives us"
+/* ------------------------------------------------------------------ */
+/*  §02 — Teaching manifesto (ink slab)                                */
+/* ------------------------------------------------------------------ */
+
+const PRINCIPLES = [
+  {
+    bn: "বাংলায় ব্যাখ্যা, ইংরেজিতে পরীক্ষা",
+    en: "Explain in Bangla, test in English",
+    body: "Concepts land fastest in the language you dream in. So every strategy class runs in Bangla — and every practice sheet, mock and feedback loop runs in English, exactly like test day.",
+  },
+  {
+    bn: "অন্ধ অনুশীলন নয়",
+    en: "No blind practice",
+    body: "Writing ten essays nobody reads is rehearsal for failure. Every script submitted at ICON is checked against the real band descriptors and returned with notes you can act on.",
+  },
+  {
+    bn: "আসল চাপে অভ্যাস",
+    en: "Mock pressure before real pressure",
+    body: "The exam hall should feel like your eleventh mock, not your first. Strict timing, real answer sheets, a face-to-face speaking interview — mercy comes after the stopwatch.",
+  },
+  {
+    bn: "আগে ফ্রি, সবসময় ফ্রি",
+    en: "Free first, always",
+    body: "Daily grammar fixes, full strategy classes, vocabulary drills — free on YouTube forever. Pay only when you want the roadmap, the feedback and the stopwatch.",
+  },
+] as const;
+
+function Manifesto() {
+  return (
+    <section className="bg-ink text-paper">
+      <div className="bg-grain relative">
+        <div className="relative mx-auto max-w-[1200px] border-x border-paper/15 px-4 py-16 sm:px-8 sm:py-24">
+          <SectionHead
+            tone="paper"
+            no="02"
+            bn="শিক্ষার ঘোষণাপত্র"
+            en="The teaching manifesto"
             title={
               <>
-                Mission, vision &amp;{" "}
-                <span className="text-gradient-brand">non-negotiables</span>
+                Four principles,
+                <br />
+                zero <em className="italic text-brand">exceptions.</em>
               </>
             }
+            lede="Every batch, every teacher, every lesson at ICON answers to these four lines. If a class ever breaks one, students are asked to call it out."
           />
-          <div className="grid gap-5 md:grid-cols-3">
-            {[
-              {
-                icon: Target,
-                title: "Our Mission",
-                body: "Make band-score-breaking IELTS preparation accessible to every Bangladeshi student — in their own language, at a fair price, with feedback that actually moves the needle.",
-                accent: "bg-brand-soft text-brand",
-              },
-              {
-                icon: Compass,
-                title: "Our Vision",
-                body: "An Bangladesh where no dream — scholarship, migration, career — dies because of an English test score. We measure ourselves by the doors our students walk through.",
-                accent: "bg-gold-soft text-gold",
-              },
-              {
-                icon: HeartHandshake,
-                title: "Our Values",
-                body: "Clarity over jargon. Feedback over lectures. Free education wherever possible. Students' trust over quick profits — always.",
-                accent: "bg-brand-soft text-brand",
-              },
-            ].map((v, i) => (
-              <Reveal key={v.title} delay={i * 0.08}>
-                <div className="group h-full rounded-2xl border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-xl hover:shadow-brand/10">
-                  <span
-                    className={`flex h-12 w-12 items-center justify-center rounded-xl ${v.accent}`}
-                  >
-                    <v.icon className="h-6 w-6" />
-                  </span>
-                  <h3 className="font-display mt-5 text-xl font-bold text-ink">
-                    {v.title}
+
+          <div className="mt-14 grid grid-cols-1 border-2 border-paper/40 sm:grid-cols-2">
+            {PRINCIPLES.map((p, i) => (
+              <Reveal
+                key={p.en}
+                delay={i * 0.07}
+                className={cn(
+                  "border-paper/40",
+                  i % 2 === 1 && "border-l",
+                  i >= 2 && "border-t"
+                )}
+              >
+                <article className="flex h-full flex-col p-6 sm:p-9">
+                  <div className="flex items-baseline justify-between gap-4">
+                    <span className="font-display text-xs font-bold tracking-[0.28em] text-brand">
+                      P{i + 1}
+                    </span>
+                    <span className="font-display text-xs font-bold tracking-[0.28em] text-paper/40">
+                      § 02 · {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3 className="font-display mt-6 text-2xl font-semibold leading-tight tracking-tight text-paper">
+                    {p.en}
                   </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {v.body}
+                  <p className="font-bn-serif mt-2 text-sm font-medium text-brand">
+                    {p.bn}
                   </p>
-                </div>
+                  <p className="mt-5 flex-1 text-[13px] leading-relaxed text-paper/60">
+                    {p.body}
+                  </p>
+                </article>
               </Reveal>
             ))}
           </div>
         </div>
-      </section>
+      </div>
+    </section>
+  );
+}
 
-      {/* Faculty */}
-      <section className="bg-background py-16 sm:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <SectionHeading
-            eyebrow="The faculty"
-            title={
-              <>
-                Learn from instructors who{" "}
-                <span className="text-gradient-brand">scored it first</span>
-              </>
-            }
-            lead="Every ICON instructor has personally achieved Band 8+ and trained under our teaching system before facing a single student."
-          />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 lg:max-w-4xl lg:mx-auto">
-            {[
-              {
-                image: "/images/teacher-1.png",
-                name: "Our Lead IELTS Instructor",
-                role: "Writing & Reading Specialist",
-                bio: "Has evaluated thousands of Task 1 & Task 2 scripts against official band descriptors. Known for turning 'I have no idea what to write' into a repeatable essay formula.",
-                tags: ["Band 8.5 Overall", "10+ years teaching"],
-              },
-              {
-                image: "/images/teacher-2.png",
-                name: "Our Speaking & Listening Coach",
-                role: "Fluency & Pronunciation Specialist",
-                bio: "Runs our speaking clubs and mock interviews. Specializes in breaking speaking fear with Band 5 vs Band 9 answer modelling and daily fluency drills.",
-                tags: ["Band 8.0 Speaking", "Certified trainer"],
-              },
-            ].map((t, i) => (
-              <Reveal key={t.name} delay={i * 0.1}>
-                <div className="group h-full overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/10">
-                  <div className="relative">
-                    <Image
+/* ------------------------------------------------------------------ */
+/*  §03 — Faculty                                                      */
+/* ------------------------------------------------------------------ */
+
+const FACULTY = [
+  {
+    image: "/images/teacher-1.png",
+    name: "Md. Rafiqul Islam",
+    role: "Senior IELTS Instructor — Writing & Reading",
+    bio: "The teacher students quote back to each other. Runs the Saturday grammar clinic and the writing feedback desk; believes every Task 2 essay has a skeleton you can learn in a week.",
+    details: [
+      { label: "Teaches", value: "Writing Task 1 & 2 · Reading" },
+      { label: "Known for", value: "The 7-minute Task 2 formula" },
+      { label: "Feedback style", value: "Honest, line by line" },
+    ],
+  },
+  {
+    image: "/images/teacher-2.png",
+    name: "Farhana Rahman",
+    role: "Speaking & Listening Lead",
+    bio: "Runs the speaking club where the fear dies. Trains candidates on Part 1–3 frameworks, Band 5 vs Band 9 answer modelling, and the accent-decoding drills for Listening.",
+    details: [
+      { label: "Teaches", value: "Speaking · Listening" },
+      { label: "Known for", value: "Mock interviews under real timing" },
+      { label: "Feedback style", value: "Recorded, replayed, rebuilt" },
+    ],
+  },
+] as const;
+
+function Faculty() {
+  return (
+    <section className="bg-paper">
+      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead
+          no="03"
+          bn="শিক্ষকমণ্ডলী"
+          en="The faculty"
+          title={
+            <>
+              Two desks. Every script
+              <br />
+              read by a <em className="italic text-brand">human</em> with a pen.
+            </>
+          }
+          lede="No rotating tutor carousel. The teachers who plan your roadmap are the ones who mark your mocks and sit across the table in your speaking interview."
+        />
+
+        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-0 lg:border-2 lg:border-ink">
+          {FACULTY.map((t, i) => (
+            <Reveal
+              key={t.name}
+              delay={i * 0.08}
+              className={cn(i === 1 && "lg:border-l lg:border-ink")}
+            >
+              <article className="flex h-full flex-col border-2 border-ink bg-card p-6 sm:p-8 lg:border-0">
+                <div className="flex flex-col gap-6 sm:flex-row">
+                  <div className="w-full shrink-0 sm:w-44">
+                    <Frame
                       src={t.image}
-                      alt={t.name}
-                      width={512}
-                      height={512}
-                      className="aspect-[5/3] w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      alt={`Portrait of ${t.name}`}
+                      ratio="4/5"
+                      caption={t.name.split(" ").slice(-1)[0]}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-coal/80 via-coal/10 to-transparent" />
-                    <div className="absolute bottom-3 left-4 right-4">
-                      <p className="font-display text-lg font-bold text-white">
-                        {t.name}
-                      </p>
-                      <p className="text-xs font-semibold text-gold-bright">
-                        {t.role}
-                      </p>
-                    </div>
                   </div>
-                  <div className="p-5">
-                    <p className="text-sm leading-relaxed text-muted-foreground">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-2xl font-semibold leading-tight tracking-tight text-ink">
+                      {t.name}
+                    </h3>
+                    <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-brand">
+                      {t.role}
+                    </p>
+                    <p className="mt-4 text-sm leading-relaxed text-ink-soft">
                       {t.bio}
                     </p>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {t.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
-              </Reveal>
-            ))}
-          </div>
+                <div className="mt-6 flex-1">
+                  {t.details.map((d) => (
+                    <RuleRow key={d.label} label={d.label} value={d.value} />
+                  ))}
+                </div>
+              </article>
+            </Reveal>
+          ))}
         </div>
-      </section>
 
-      {/* Community */}
-      <section className="bg-grain relative overflow-hidden bg-coal py-16 sm:py-24">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[300px] w-[600px] -translate-x-1/2 rounded-full bg-brand/15 blur-[130px]" />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6">
-          <SectionHeading
-            dark
-            eyebrow="The community"
-            title={
-              <>
-                One classroom.{" "}
-                <span className="text-gradient-gold">Eight platforms.</span>
-              </>
-            }
-            lead="Wherever you scroll, there's a free ICON lesson waiting. Follow your favorites and learn daily."
-          />
+        <Reveal delay={0.1}>
+          <p className="mt-8 text-center font-display text-sm italic text-ink-soft">
+            Plus guest examiners for mock seasons — and 8,500 community members
+            who answer questions at 1 a.m.
+          </p>
+        </Reveal>
+      </Shell>
+    </section>
+  );
+}
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { icon: Facebook, name: "Facebook", stat: "8.5K followers", note: "Daily posts & live classes", href: "https://www.facebook.com/iconenglishcenter" },
-              { icon: Youtube, name: "YouTube", stat: "59+ videos", note: "Full free lessons", href: "https://www.youtube.com/@ICONEnglishCenterBD" },
-              { icon: Instagram, name: "Instagram", stat: "Daily tips", note: "Carousels & reels", href: "https://www.instagram.com/iconenglishcenterbd" },
-              { icon: Music2, name: "TikTok", stat: "Quick wins", note: "60-second strategies", href: "https://www.tiktok.com/@iconenglishcenterbd" },
-            ].map((p, i) => (
-              <Reveal key={p.name} delay={i * 0.07}>
-                <a
-                  href={p.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/50 hover:bg-white/[0.07]"
+/* ------------------------------------------------------------------ */
+/*  §04 — Weekly rhythm                                                */
+/* ------------------------------------------------------------------ */
+
+const WEEK = [
+  { day: "Saturday", slots: "Grammar clinic · Writing desk open", tag: "Open day" },
+  { day: "Sunday", slots: "Listening lab · Reading drills", tag: "Core" },
+  { day: "Monday", slots: "Writing Task 1 & 2 classes", tag: "Core" },
+  { day: "Tuesday", slots: "Speaking club (evening) · Feedback returns", tag: "Club" },
+  { day: "Wednesday", slots: "Listening lab · Vocabulary review", tag: "Core" },
+  { day: "Thursday", slots: "Strategy class · Doubt hour on WhatsApp", tag: "Core" },
+  { day: "Friday", slots: "Full mock test — strict timing, all 4 modules", tag: "Mock day" },
+] as const;
+
+function WeeklyRhythm() {
+  return (
+    <section className="border-y-2 border-ink bg-paper-deep">
+      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead
+          no="04"
+          bn="সাপ্তাহিক ছন্দ"
+          en="How a batch runs"
+          title={
+            <>
+              One week at ICON,
+              <br />
+              on <em className="italic text-brand">repeat.</em>
+            </>
+          }
+          lede="The rhythm barely changes — that's the point. IELTS rewards the students whose preparation looks boring from the outside."
+        />
+
+        <div className="mt-12 overflow-x-auto">
+          <table className="w-full min-w-[640px] border-2 border-ink bg-card text-left">
+            <thead>
+              <tr className="border-b-2 border-ink bg-ink text-paper">
+                <th className="px-4 py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] sm:px-6">
+                  Day
+                </th>
+                <th className="px-4 py-3.5 text-[11px] font-bold uppercase tracking-[0.2em] sm:px-6">
+                  What runs
+                </th>
+                <th className="px-4 py-3.5 text-right text-[11px] font-bold uppercase tracking-[0.2em] sm:px-6">
+                  Type
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {WEEK.map((d, i) => (
+                <tr
+                  key={d.day}
+                  className={cn(
+                    "border-b border-ink/15 transition-colors last:border-b-0 hover:bg-brand-soft/30",
+                    d.tag === "Mock day" && "bg-brand-soft/40"
+                  )}
                 >
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-brand/30 transition-transform group-hover:scale-110">
-                    <p.icon className="h-6 w-6" />
-                  </span>
-                  <p className="font-display mt-4 text-lg font-bold text-white">
-                    {p.name}
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-gold-bright">
-                    {p.stat}
-                  </p>
-                  <p className="mt-2 text-sm text-white/50">{p.note}</p>
-                  <span className="mt-auto pt-4 text-xs font-bold uppercase tracking-wider text-white/40 transition-colors group-hover:text-brand">
-                    Follow us →
-                  </span>
-                </a>
-              </Reveal>
-            ))}
-          </div>
-
-          {/* numbers */}
-          <div className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/10 lg:grid-cols-4">
-            {[
-              { value: 8500, suffix: "+", label: "Community followers" },
-              { value: 59, suffix: "+", label: "Free video lessons" },
-              { value: 34000, suffix: "+", label: "YouTube views" },
-              { value: 8, suffix: "", label: "Platforms we teach on" },
-            ].map((s) => (
-              <div
-                key={s.label}
-                className="flex flex-col items-center gap-1.5 bg-coal px-4 py-8 text-center"
-              >
-                <Counter
-                  value={s.value}
-                  suffix={s.suffix}
-                  className="font-display text-3xl font-extrabold text-white"
-                />
-                <span className="text-xs font-medium uppercase tracking-[0.14em] text-white/45">
-                  {s.label}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <Reveal delay={0.15} className="mt-12 flex flex-col items-center gap-3">
-            <div className="flex items-center gap-2 text-sm text-white/50">
-              <BookHeart className="h-4 w-4 text-brand" />
-              Also on LinkedIn, Pinterest, Threads &amp; Quora
-            </div>
-            <Button
-              onClick={() => onNavigate("admission")}
-              size="lg"
-              className="mt-2 h-12 rounded-full bg-brand px-7 text-[15px] font-bold shadow-xl shadow-brand/30 transition-all hover:scale-[1.03] hover:bg-brand-deep"
-            >
-              Join the community — Book a demo
-              <Users className="ml-1.5 h-4.5 w-4.5" />
-            </Button>
-          </Reveal>
+                  <td className="px-4 py-4 sm:px-6">
+                    <span className="font-display text-base font-semibold text-ink">
+                      {d.day}
+                    </span>
+                    <span className="ml-3 font-display text-[10px] font-bold tracking-[0.2em] text-ink-faint">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </td>
+                  <td className="px-4 py-4 text-sm text-ink-soft sm:px-6">
+                    {d.slots}
+                  </td>
+                  <td className="px-4 py-4 text-right sm:px-6">
+                    <span
+                      className={cn(
+                        "inline-block border px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em]",
+                        d.tag === "Mock day"
+                          ? "border-brand bg-brand text-paper"
+                          : d.tag === "Open day" || d.tag === "Club"
+                            ? "border-ink text-ink"
+                            : "border-ink/40 text-ink-soft"
+                      )}
+                    >
+                      {d.tag}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </section>
-    </>
+
+        <Reveal delay={0.1}>
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-ink-faint">
+            Offline batches at the Dhaka center · Online batches live & recorded ·
+            Hours {BRAND.hours}
+          </p>
+        </Reveal>
+      </Shell>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Closing slab                                                       */
+/* ------------------------------------------------------------------ */
+
+function ClosingSlab({ onNavigate }: { onNavigate: (p: PageId) => void }) {
+  return (
+    <section className="relative overflow-hidden bg-brand text-paper">
+      <div className="bg-grain relative">
+        <div className="relative mx-auto max-w-[1200px] border-x border-ink/30 px-4 py-16 sm:px-8 sm:py-20">
+          <div className="grid grid-cols-1 items-end gap-10 lg:grid-cols-[1.6fr_1fr]">
+            <div>
+              <Reveal>
+                <Kicker tone="paper">Still reading? Good sign.</Kicker>
+              </Reveal>
+              <Reveal delay={0.07}>
+                <h2 className="font-display mt-5 text-balance text-4xl font-semibold leading-[1.02] tracking-tight sm:text-5xl">
+                  The free diagnostic test decides the rest —{" "}
+                  <em className="italic">not a sales pitch.</em>
+                </h2>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <p className="font-bn-serif mt-5 text-lg font-medium text-paper/85">
+                  আসো, আগে তোমার লেভেলটা মেপে দেখি।
+                </p>
+              </Reveal>
+            </div>
+            <Reveal delay={0.12}>
+              <div className="space-y-4">
+                <Btn variant="paper" size="lg" onClick={() => onNavigate("admission")} className="w-full">
+                  Book the free diagnostic
+                </Btn>
+                <div className="border-t border-paper/25 pt-4">
+                  <RuleRow
+                    label="Everywhere else"
+                    value={SOCIALS.slice(0, 4).map((s) => s.label).join(" · ")}
+                    className="border-paper/25 [&>span:last-child]:text-paper"
+                  />
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

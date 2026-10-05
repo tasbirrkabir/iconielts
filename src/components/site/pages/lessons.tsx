@@ -1,20 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import {
-  Bell,
-  Clock,
-  Filter,
-  Play,
-  Sparkles,
-  Youtube,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { PageHeader } from "../page-header";
-import { Reveal } from "../reveal";
-import { SectionHeading } from "../section-heading";
+  Btn,
+  Frame,
+  Kicker,
+  PageHead,
+  Reveal,
+  SectionHead,
+  Shell,
+  Stamp,
+  Ticker,
+} from "../kit";
 import {
+  BRAND,
   LESSONS,
   LESSON_CATEGORIES,
   getYtLink,
@@ -23,252 +22,351 @@ import {
 } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
 
-/* ---------------------------------------------------------------- */
+/* ================================================================== */
+/*  LESSONS — the broadcast guide                                      */
+/* ================================================================== */
 
 export function LessonsPage({
   onNavigate,
 }: {
   onNavigate: (p: PageId) => void;
 }) {
-  const [category, setCategory] = useState<(typeof LESSON_CATEGORIES)[number]>("All");
-
-  const featured = LESSONS[0];
-  const filtered = useMemo(
-    () =>
-      category === "All"
-        ? LESSONS.slice(1)
-        : LESSONS.filter((l) => l.category === category),
-    [category]
-  );
-
   return (
     <>
-      <PageHeader
-        page="lessons"
-        eyebrow="Free lessons"
+      <PageHead
+        no="04"
+        bn="ফ্রি লেসন"
         title={
           <>
-            A full IELTS education,{" "}
-            <span className="text-gradient-gold">free on YouTube.</span>
+            Free, daily, and actually useful —{" "}
+            <em className="italic text-brand">the open classroom.</em>
           </>
         }
-        lead="Full-length strategy classes, quick wins and grammar fixes — recorded by the same instructors who teach our paid batches. Start with any lesson below."
-        bn="প্রতিদিন নতুন ফ্রি লেসন — সাবস্ক্রাইব করে পাশে থাকুন"
+        lede="Every full-length strategy class, grammar fix and module deep-dive from the ICON channel — watchable tonight, payable never."
+        meta={[
+          { label: "Open classes", value: "59+ videos" },
+          { label: "Categories", value: "5 modules" },
+          { label: "Cost", value: "৳0 — forever" },
+          { label: "New lessons", value: "Near-daily" },
+        ]}
       />
+      <FeaturedBroadcast />
+      <TheGuide />
+      <SubscribeSlab />
+      <Ticker
+        slow
+        items={[
+          "Grammar fix — প্রতিদিন",
+          "Band 7+ strategies",
+          "Listening drills",
+          "Writing formulas",
+          "Speaking frameworks",
+          "Reading in 3 minutes",
+        ]}
+      />
+      <ClosingStrip onNavigate={onNavigate} />
+    </>
+  );
+}
 
-      {/* Featured lesson */}
-      <section className="bg-background py-14 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <Reveal>
-            <div className="grid gap-8 rounded-3xl border border-border bg-card p-5 sm:p-8 lg:grid-cols-[1.5fr_1fr] lg:items-center">
-              <a
-                href={getYtLink(featured.id)}
-                target="_blank"
-                rel="noreferrer"
-                className="group relative block overflow-hidden rounded-2xl"
-                aria-label={`Watch: ${featured.title}`}
-              >
-                <img
-                  src={getYtThumb(featured.id)}
-                  alt={featured.title}
-                  className="aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-coal/70 via-transparent to-transparent" />
-                <span className="absolute inset-0 m-auto flex h-16 w-16 items-center justify-center rounded-full bg-brand text-white shadow-2xl shadow-black/50 transition-all duration-300 group-hover:scale-110">
-                  <Play className="ml-1 h-7 w-7 fill-current" />
-                </span>
-                <span className="absolute bottom-4 left-4 rounded-md bg-brand px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
-                  Featured lesson
-                </span>
-                <span className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-md bg-coal/85 px-2.5 py-1 text-xs font-bold text-white backdrop-blur">
-                  <Clock className="h-3.5 w-3.5" />
-                  {featured.duration}
-                </span>
-              </a>
+/* ------------------------------------------------------------------ */
+/*  §01 — Featured broadcast                                           */
+/* ------------------------------------------------------------------ */
 
-              <div className="flex flex-col items-start gap-5">
-                <span className="inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand-soft px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-brand">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {featured.category}
+function FeaturedBroadcast() {
+  const featured = LESSONS[0];
+  return (
+    <section className="bg-paper">
+      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead
+          no="01"
+          bn="আজকের সম্প্রচার"
+          en="Tonight's broadcast"
+          title={
+            <>
+              Start here — the plan
+              <br />
+              that fits <em className="italic text-brand">every</em> module.
+            </>
+          }
+          lede="The 30-day booster plan is our most-watched class for a reason: it turns 'IELTS preparation' from a mood into a schedule."
+        />
+
+        <Reveal delay={0.08}>
+          <a
+            href={getYtLink(featured.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative mt-12 block border-2 border-ink bg-card shadow-[12px_12px_0_0_rgba(26,21,18,0.9)]"
+          >
+            <div className="relative overflow-hidden">
+              { }
+              <img
+                src={getYtThumb(featured.id)}
+                alt={featured.title}
+                loading="lazy"
+                className="img-print aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+              <div className="absolute inset-0 bg-ink/10 transition-colors duration-300 group-hover:bg-ink/0" />
+              <span className="absolute left-0 top-0 bg-brand px-4 py-2 text-[11px] font-bold uppercase tracking-[0.2em] text-paper">
+                Most watched
+              </span>
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="flex h-24 w-24 items-center justify-center border-2 border-paper bg-ink/75 text-2xl text-paper transition-all duration-300 group-hover:scale-105 group-hover:border-ink group-hover:bg-brand">
+                  ▶
                 </span>
-                <h2 className="font-display text-2xl font-extrabold leading-tight text-ink sm:text-3xl">
-                  {featured.title}
-                </h2>
-                <p className="text-[15px] leading-relaxed text-muted-foreground">
-                  Our most complete free class — a full 30-day, module-by-module
-                  booster plan covering Listening, Reading, Writing and
-                  Speaking. If you follow only one free lesson, make it this
-                  one.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button
-                    className="h-11 rounded-full bg-brand px-6 text-sm font-bold shadow-lg shadow-brand/25 hover:bg-brand-deep"
-                    onClick={() =>
-                      window.open(getYtLink(featured.id), "_blank")
-                    }
-                  >
-                    <Play className="mr-1.5 h-4 w-4 fill-current" />
-                    Watch the full class
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="h-11 rounded-full border-coal/20 px-5 text-sm font-bold text-ink hover:border-coal hover:bg-coal hover:text-white"
-                    onClick={() =>
-                      window.open(
-                        "https://www.youtube.com/@ICONEnglishCenterBD?sub_confirmation=1",
-                        "_blank"
-                      )
-                    }
-                  >
-                    <Bell className="mr-1.5 h-4 w-4" />
-                    Subscribe for daily lessons
-                  </Button>
-                </div>
-              </div>
+              </span>
+              <span className="absolute bottom-0 right-0 bg-ink px-3 py-1.5 text-xs font-bold tracking-widest text-paper">
+                {featured.duration}
+              </span>
             </div>
-          </Reveal>
-        </div>
-      </section>
+            <div className="flex flex-wrap items-center justify-between gap-4 p-5 sm:p-7">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-brand">
+                  {featured.category} · Free full class
+                </p>
+                <h3 className="font-display mt-2 max-w-3xl text-xl font-semibold leading-snug tracking-tight text-ink sm:text-2xl lg:text-3xl">
+                  {featured.title}
+                </h3>
+              </div>
+              <span className="font-display hidden text-lg font-bold text-ink-faint transition-colors group-hover:text-brand sm:block">
+                Watch on YouTube ↗
+              </span>
+            </div>
+          </a>
+        </Reveal>
+      </Shell>
+    </section>
+  );
+}
 
-      {/* All lessons */}
-      <section className="bg-cream py-14 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <SectionHeading
-            eyebrow="Lesson library"
-            title={
-              <>
-                Browse <span className="text-gradient-brand">every free lesson</span>{" "}
-                we&apos;ve published
-              </>
-            }
-            lead="New lessons every week. Filter by the module you're fighting with today."
-          />
+/* ------------------------------------------------------------------ */
+/*  §02 — The guide (filterable listing)                               */
+/* ------------------------------------------------------------------ */
 
-          {/* filters */}
-          <Reveal className="mb-8 flex flex-wrap items-center gap-2.5">
-            <span className="mr-1 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              <Filter className="h-3.5 w-3.5" />
-              Filter
-            </span>
-            {LESSON_CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategory(cat)}
-                className={cn(
-                  "rounded-full border px-4 py-2 text-[13px] font-bold transition-all duration-200",
-                  category === cat
-                    ? "border-brand bg-brand text-white shadow-lg shadow-brand/25"
-                    : "border-border bg-card text-ink/70 hover:border-brand/40 hover:text-brand"
-                )}
-              >
-                {cat}
-                <span
+function TheGuide() {
+  const [category, setCategory] =
+    useState<(typeof LESSON_CATEGORIES)[number]>("All");
+
+  const filtered =
+    category === "All"
+      ? LESSONS
+      : LESSONS.filter((l) => l.category === category);
+
+  return (
+    <section className="border-y-2 border-ink bg-paper-deep">
+      <Shell className="px-4 py-16 sm:px-8 sm:py-24">
+        <SectionHead
+          no="02"
+          bn="সম্প্রচার তালিকা"
+          en="The guide"
+          title={
+            <>
+              The listing — pick a module,
+              <br />
+              press <em className="italic text-brand">play.</em>
+            </>
+          }
+          lede="Every entry below is a complete, free class from the channel. No teasers, no paywalled second halves."
+        />
+
+        {/* filter tabs */}
+        <Reveal delay={0.06}>
+          <div
+            className="mt-10 flex flex-wrap gap-0 border-2 border-ink bg-card"
+            role="tablist"
+            aria-label="Lesson categories"
+          >
+            {LESSON_CATEGORIES.map((cat) => {
+              const active = category === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => setCategory(cat)}
                   className={cn(
-                    "ml-2 rounded-full px-1.5 py-0.5 text-[10px]",
-                    category === cat
-                      ? "bg-white/20 text-white"
-                      : "bg-muted text-muted-foreground"
+                    "cursor-pointer border-ink px-4 py-3 text-[11px] font-bold uppercase tracking-[0.16em] transition-colors sm:px-6",
+                    "-ml-[2px] first:ml-0",
+                    active
+                      ? "z-10 bg-ink text-paper"
+                      : "bg-card text-ink-soft hover:bg-brand-soft/40 hover:text-ink"
                   )}
                 >
-                  {cat === "All"
-                    ? LESSONS.length
-                    : LESSONS.filter((l) => l.category === cat).length}
-                </span>
-              </button>
-            ))}
-          </Reveal>
+                  {cat}
+                </button>
+              );
+            })}
+            <span className="ml-auto hidden items-center px-5 text-[11px] font-bold uppercase tracking-[0.16em] text-ink-faint sm:flex">
+              {filtered.length}{" "}
+              {filtered.length === 1 ? "entry" : "entries"}
+            </span>
+          </div>
+        </Reveal>
 
-          {/* grid */}
-          <motion.div layout className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <AnimatePresence mode="popLayout">
-              {filtered.map((l) => (
-                <motion.a
-                  layout
-                  key={l.id}
+        {/* listing */}
+        <div className="mt-0 border-x-2 border-b-2 border-ink bg-card">
+          {filtered.length === 0 ? (
+            <p className="px-6 py-12 text-center font-display text-lg italic text-ink-faint">
+              Nothing scheduled in this slot yet — check another module.
+            </p>
+          ) : (
+            filtered.map((l, i) => (
+              <Reveal key={l.id} delay={Math.min(i * 0.03, 0.3)}>
+                <a
                   href={getYtLink(l.id)}
                   target="_blank"
-                  rel="noreferrer"
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.92 }}
-                  transition={{ duration: 0.3 }}
-                  className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1.5 hover:border-brand/30 hover:shadow-2xl hover:shadow-brand/10"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    "group grid grid-cols-[auto_1fr_auto] items-center gap-x-4 border-t border-ink/15 px-4 py-4 transition-colors first:border-t-0 hover:bg-ink sm:gap-x-6 sm:px-6",
+                    i % 2 === 1 && "bg-paper/50"
+                  )}
                 >
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={getYtThumb(l.id)}
-                      alt={l.title}
-                      loading="lazy"
-                      className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-coal/60 to-transparent" />
-                    <span className="absolute inset-0 m-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand/95 text-white opacity-90 shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:opacity-100">
-                      <Play className="ml-0.5 h-5 w-5 fill-current" />
+                  <span className="font-display w-8 text-sm font-bold tracking-wider text-brand sm:w-10">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="min-w-0">
+                    <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="border border-ink/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.16em] text-ink-soft transition-colors group-hover:border-paper/30 group-hover:text-paper/60">
+                        {l.category}
+                      </span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-ink-faint transition-colors group-hover:text-paper/50">
+                        {l.duration}
+                      </span>
                     </span>
-                    <span className="absolute bottom-2.5 right-2.5 rounded-md bg-coal/85 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur">
-                      {l.duration}
+                    <span className="font-display mt-1.5 block text-[14px] font-semibold leading-snug text-ink transition-colors group-hover:text-paper sm:text-[15px]">
+                      <span className="line-clamp-2">{l.title}</span>
                     </span>
-                  </div>
-                  <div className="flex flex-1 flex-col p-4">
-                    <span className="w-max rounded-full bg-brand-soft px-2.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-brand">
-                      {l.category}
-                    </span>
-                    <h3 className="font-display mt-2.5 line-clamp-2 text-[15px] font-bold leading-snug text-ink transition-colors group-hover:text-brand">
-                      {l.title}
-                    </h3>
-                    <span className="mt-auto pt-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70 transition-colors group-hover:text-brand">
-                      Watch on YouTube →
-                    </span>
-                  </div>
-                </motion.a>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="font-display text-lg font-bold text-ink-faint transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-brand"
+                  >
+                    ↗
+                  </span>
+                </a>
+              </Reveal>
+            ))
+          )}
+        </div>
 
-          {/* subscribe banner */}
-          <Reveal delay={0.1} className="mt-14">
-            <div className="bg-grain relative overflow-hidden rounded-3xl bg-coal px-6 py-10 text-center sm:px-10">
-              <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-brand/25 blur-[100px]" />
-              <div className="pointer-events-none absolute -bottom-24 -right-16 h-64 w-64 rounded-full bg-gold/15 blur-[100px]" />
-              <div className="relative">
-                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand text-white shadow-xl shadow-brand/40">
-                  <Youtube className="h-7 w-7" />
-                </span>
-                <h3 className="font-display mt-5 text-2xl font-extrabold text-white sm:text-3xl">
-                  One new free lesson. Every single day.
-                </h3>
-                <p className="font-bengali mt-2 text-sm text-gold-bright/90 sm:text-base">
-                  সাবস্ক্রাইব করুন এবং প্রতিদিন নতুন IELTS টিপস ও ফ্রি লেসন পেতে
-                  আমাদের সাথে থাকুন
-                </p>
-                <div className="mt-7 flex flex-wrap justify-center gap-3">
-                  <Button
+        <Reveal delay={0.1}>
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-ink-faint">
+            More classes upload near-daily — the full archive lives on the
+            channel.
+          </p>
+        </Reveal>
+      </Shell>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  §03 — Subscribe slab (ink)                                         */
+/* ------------------------------------------------------------------ */
+
+function SubscribeSlab() {
+  return (
+    <section className="bg-ink text-paper">
+      <div className="bg-grain relative">
+        <div className="relative mx-auto max-w-[1200px] border-x border-paper/15 px-4 py-16 sm:px-8 sm:py-24">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-16">
+            <div>
+              <SectionHead
+                tone="paper"
+                no="03"
+                bn="সাবস্ক্রাইব করো"
+                en="The channel"
+                title={
+                  <>
+                    One subscription,
+                    <br />
+                    a class a <em className="italic text-brand">day.</em>
+                  </>
+                }
+                lede="We post the Free Grammar Fix and full strategy classes on the ICON English Center channel — the same lessons our paying batches revise from."
+                className="border-paper/80"
+              />
+              <Reveal delay={0.14}>
+                <div className="mt-8 flex flex-wrap items-center gap-5">
+                  <Btn
+                    variant="paper"
                     size="lg"
-                    className="h-12 rounded-full bg-brand px-7 text-[15px] font-bold shadow-xl shadow-brand/35 transition-all hover:scale-[1.03] hover:bg-brand-deep"
-                    onClick={() =>
-                      window.open(
-                        "https://www.youtube.com/@ICONEnglishCenterBD?sub_confirmation=1",
-                        "_blank"
-                      )
-                    }
+                    href="https://www.youtube.com/@ICONEnglishCenterBD?sub_confirmation=1"
+                    external
                   >
-                    <Youtube className="mr-2 h-5 w-5" />
                     Subscribe on YouTube
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="h-12 rounded-full border-white/20 bg-white/5 px-6 text-[15px] font-bold text-white backdrop-blur hover:border-white/40 hover:bg-white/10"
-                    onClick={() => onNavigate("admission")}
-                  >
-                    Ready for the full course?
-                  </Button>
+                  </Btn>
+                  <div className="border-l-2 border-brand pl-5">
+                    <p className="font-display text-3xl font-semibold leading-none text-paper">
+                      34,000+
+                    </p>
+                    <p className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-paper/50">
+                      Views across the archive
+                    </p>
+                  </div>
                 </div>
+              </Reveal>
+            </div>
+
+            <Reveal delay={0.1}>
+              <div className="relative">
+                <Frame
+                  src="/images/course-ielts.png"
+                  alt="ICON English Center study materials — IELTS books, notes and headphones"
+                  caption="The study desk — what every lesson assumes you have"
+                  ratio="4/3"
+                  className="shadow-[10px_10px_0_0_rgba(227,30,36,0.85)]"
+                />
+                <Stamp tone="paper" className="absolute -left-3 -top-5 bg-ink px-3 py-2">
+                  59+ free classes
+                </Stamp>
               </div>
+            </Reveal>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Closing strip                                                      */
+/* ------------------------------------------------------------------ */
+
+function ClosingStrip({ onNavigate }: { onNavigate: (p: PageId) => void }) {
+  return (
+    <section className="bg-brand-soft/50">
+      <Shell className="px-4 py-14 sm:px-8 sm:py-16">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.5fr_auto]">
+          <div>
+            <Reveal>
+              <Kicker>The catch, honestly told</Kicker>
+            </Reveal>
+            <Reveal delay={0.07}>
+              <h2 className="font-display mt-4 text-balance text-3xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-4xl">
+                The lessons are free forever. The{" "}
+                <em className="italic text-brand">feedback</em> is what we charge
+                for.
+              </h2>
+            </Reveal>
+            <Reveal delay={0.12}>
+              <p className="font-bn-serif mt-4 text-lg font-medium text-ink">
+                শেখা ফ্রি — মার্কিং চাইলে এসো।
+              </p>
+            </Reveal>
+          </div>
+          <Reveal delay={0.12}>
+            <div className="flex flex-wrap gap-4">
+              <Btn onClick={() => onNavigate("admission")}>Get the feedback too</Btn>
+              <Btn variant="outline" href={BRAND.whatsappHref} external>
+                WhatsApp the desk
+              </Btn>
             </div>
           </Reveal>
         </div>
-      </section>
-    </>
+      </Shell>
+    </section>
   );
 }

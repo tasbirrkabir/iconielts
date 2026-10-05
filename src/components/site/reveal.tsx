@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 const variants: Variants = {
   hidden: { opacity: 0, y: 28 },
@@ -26,7 +27,7 @@ export function Reveal({
 }) {
   return (
     <motion.div
-      className={className}
+      className={cn("min-w-0", className)}
       variants={variants}
       initial="hidden"
       whileInView="visible"
