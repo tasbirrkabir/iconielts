@@ -127,7 +127,7 @@ function Hero({ onNavigate }: { onNavigate: (p: PageId) => void }) {
           />
           <Figure
             src="/images/hero-main.png"
-            alt="Students preparing for IELTS together at ICON English Center"
+            alt="Students preparing for IELTS together at Demo IELTS Academy"
             ratio="aspect-[4/3]"
             className="relative"
           />
@@ -172,7 +172,7 @@ function Philosophy({ onNavigate }: { onNavigate: (p: PageId) => void }) {
       <Container className="grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
         <div>
           <Reveal>
-            <Eyebrow>Why ICON exists</Eyebrow>
+            <Eyebrow>Why Demo Academy exists</Eyebrow>
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="font-display mt-5 text-balance text-3xl font-medium leading-[1.12] tracking-[-0.01em] text-ink sm:text-4xl">
@@ -203,7 +203,7 @@ function Philosophy({ onNavigate }: { onNavigate: (p: PageId) => void }) {
           </Reveal>
           <Reveal delay={0.06}>
             <p>
-              So ICON was built as the opposite of studying alone. Every
+              So Demo IELTS Academy was built as the opposite of studying alone. Every
               strategy is explained in Bangla first, so nothing stays fuzzy.
               Then you practice exactly like the real exam — in English, under
               real timing, with a teacher who reads your writing and tells you
@@ -215,7 +215,7 @@ function Philosophy({ onNavigate }: { onNavigate: (p: PageId) => void }) {
               The free part came naturally: a daily grammar fix on Facebook
               became a YouTube channel of full-length classes, and the channel
               became a community of{" "}
-              <strong className="font-semibold text-ink">8,500+ learners</strong>{" "}
+              <strong className="font-semibold text-ink">10,000+ demo learners</strong>{" "}
               who help each other at 1 a.m. What we charge for is the part
               YouTube can&apos;t give — a roadmap with your name on it,
               feedback on every script, and mocks with a stopwatch&apos;s

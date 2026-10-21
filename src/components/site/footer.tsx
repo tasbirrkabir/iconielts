@@ -29,13 +29,13 @@ export function Footer({
           <div className="max-w-xs">
             <div className="flex items-baseline gap-2.5">
               <span className="font-display text-xl font-semibold tracking-[-0.01em] text-ink">
-                ICON
+                {BRAND.shortName}
                 <span aria-hidden className="ml-0.5 text-brand">
                   .
                 </span>
               </span>
               <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-faint">
-                English Center
+                IELTS Academy
               </span>
             </div>
             <p className="mt-5 text-sm leading-relaxed text-ink-soft">
@@ -142,13 +142,13 @@ export function Footer({
       {/* quiet watermark */}
       <div aria-hidden className="select-none overflow-hidden">
         <div className="font-display -mb-[0.16em] text-center text-[clamp(5rem,17vw,13rem)] font-semibold leading-none tracking-[-0.02em] text-ink/[0.045]">
-          ICON
+          {BRAND.shortName}
         </div>
       </div>
 
       <div className="border-t border-hairline">
         <Container className="flex flex-col items-center justify-between gap-3 py-6 text-[13px] text-ink-faint sm:flex-row">
-          <p>© {new Date().getFullYear()} ICON English Center. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
           <p className="font-bengali text-xs">ঢাকা, বাংলাদেশ — Dhaka, Bangladesh</p>
         </Container>
       </div>

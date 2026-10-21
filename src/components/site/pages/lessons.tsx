@@ -52,9 +52,9 @@ export function LessonsPage({
         }
         lede="Strategy classes, grammar fixes and module deep-dives — the same teaching we charge for, published for everyone. Start with the most-watched lesson below."
         meta={[
-          { label: "Channel", value: "@ICONEnglishCenterBD" },
-          { label: "Videos", value: "59 and counting" },
-          { label: "Views", value: "34,000+" },
+          { label: "Channel", value: "@DemoIELTSAcademy" },
+          { label: "Videos", value: "50 and counting" },
+          { label: "Views", value: "25,000+" },
           { label: "Price", value: "Free, forever" },
         ]}
       />
@@ -114,7 +114,7 @@ export function LessonsPage({
             />
             <ArrowLink
               label="Subscribe on YouTube"
-              href="https://www.youtube.com/@ICONEnglishCenterBD"
+              href="https://youtube.com/@DemoIELTSAcademy"
               className="shrink-0 pb-1"
             />
           </div>
@@ -208,7 +208,7 @@ export function LessonsPage({
                 </p>
               </div>
               <Btn
-                href="https://www.youtube.com/@ICONEnglishCenterBD"
+                href="https://youtube.com/@DemoIELTSAcademy"
                 external
                 size="lg"
                 className="shrink-0"

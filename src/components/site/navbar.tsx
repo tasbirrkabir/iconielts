@@ -24,16 +24,16 @@ function Wordmark({ onHome }: { onHome: () => void }) {
       type="button"
       onClick={onHome}
       className="group flex cursor-pointer items-baseline gap-2.5 text-left"
-      aria-label="ICON English Center — home"
+      aria-label={`${BRAND.name} — home`}
     >
       <span className="font-display text-[1.4rem] font-semibold leading-none tracking-[-0.01em] text-ink">
-        ICON
+        {BRAND.shortName}
         <span aria-hidden className="ml-0.5 text-brand">
           .
         </span>
       </span>
       <span className="hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-faint transition-colors group-hover:text-ink-soft sm:inline">
-        English Center
+        IELTS Academy
       </span>
     </button>
   );

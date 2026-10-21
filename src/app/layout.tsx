@@ -23,24 +23,24 @@ const hind = Hind_Siliguri({
 });
 
 export const metadata: Metadata = {
-  title: "ICON English Center — IELTS, taught in Bangla",
+  title: "Demo IELTS Academy — IELTS Preparation (Demo Platform)",
   description:
-    "ICON English Center helps Bangladeshi students go from stuck-at-5 to Band 7.5 and beyond — Bengali-first IELTS teaching, feedback on every script, and mock tests under real pressure.",
+    "Demo IELTS Academy helps students prepare from foundation to Band 7.5 and beyond — Bengali-first IELTS teaching, feedback on every script, and mock tests under real pressure.",
   keywords: [
-    "ICON English Center",
+    "Demo IELTS Academy",
     "IELTS Bangladesh",
-    "IELTS preparation",
+    "IELTS preparation demo",
     "IELTS course",
     "English course Bangladesh",
     "IELTS Bangla",
     "spoken English",
   ],
-  authors: [{ name: "ICON English Center" }],
+  authors: [{ name: "Demo IELTS Academy" }],
   openGraph: {
-    title: "ICON English Center — IELTS, taught in Bangla",
+    title: "Demo IELTS Academy — IELTS Preparation Demo",
     description:
-      "বাংলায় সহজে স্বপ্নের IELTS Band Score অর্জনের নির্ভরযোগ্য সঙ্গী। Courses, free lessons, mock tests & mentoring.",
-    siteName: "ICON English Center",
+      "বাংলায় সহজে স্বপ্নের IELTS Band Score অর্জনের ডেমো প্ল্যাটফর্ম। Courses, free lessons, mock tests & mentoring.",
+    siteName: "Demo IELTS Academy",
     type: "website",
   },
 };

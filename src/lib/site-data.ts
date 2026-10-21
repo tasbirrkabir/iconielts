@@ -62,69 +62,69 @@ export interface Testimonial {
 /* ------------------------------------------------------------------ */
 
 export const BRAND = {
-  name: "ICON English Center",
-  shortName: "ICON",
+  name: "Demo IELTS Academy",
+  shortName: "DEMO",
   taglineEn:
-    "Your trusted companion for the IELTS band score of your dreams — taught in Bangla.",
-  taglineBn: "বাংলায় সহজে স্বপ্নের IELTS Band Score অর্জনের নির্ভরযোগ্য সঙ্গী",
-  phone: "+880 1334-938896",
-  phoneHref: "tel:+8801334938896",
-  whatsapp: "+880 1334-938891",
-  whatsappHref: "https://wa.me/8801334938891",
-  email: "iconenglishcenterbd@gmail.com",
-  emailHref: "mailto:iconenglishcenterbd@gmail.com",
-  location: "Dhaka, Bangladesh",
+    "Your trusted companion for the IELTS band score of your dreams — demo learning platform.",
+  taglineBn: "বাংলায় সহজে স্বপ্নের IELTS Band Score অর্জনের ডেমো প্ল্যাটফর্ম",
+  phone: "+880 1700-000000",
+  phoneHref: "tel:+880170000000",
+  whatsapp: "+880 1700-000001",
+  whatsappHref: "https://wa.me/880170000001",
+  email: "demo@example.com",
+  emailHref: "mailto:demo@example.com",
+  location: "Demo Campus, Dhaka, Bangladesh",
   hours: "Sat – Thu · 10:00 AM – 8:00 PM",
 } as const;
 
 export const SOCIALS: SocialLink[] = [
   {
     label: "Facebook",
-    href: "https://www.facebook.com/iconenglishcenter",
-    handle: "iconenglishcenter",
+    href: "https://facebook.com/demo.ielts.academy",
+    handle: "demo.ielts.academy",
   },
   {
     label: "YouTube",
-    href: "https://www.youtube.com/@ICONEnglishCenterBD",
-    handle: "@ICONEnglishCenterBD",
+    href: "https://youtube.com/@DemoIELTSAcademy",
+    handle: "@DemoIELTSAcademy",
   },
   {
     label: "Instagram",
-    href: "https://www.instagram.com/iconenglishcenterbd",
-    handle: "iconenglishcenterbd",
+    href: "https://instagram.com/demo.ielts.academy",
+    handle: "demo.ielts.academy",
   },
   {
     label: "TikTok",
-    href: "https://www.tiktok.com/@iconenglishcenterbd",
-    handle: "iconenglishcenterbd",
+    href: "https://tiktok.com/@demo.ielts.academy",
+    handle: "demo.ielts.academy",
   },
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/icon-english-center-profile",
-    handle: "icon-english-center-profile",
+    href: "https://linkedin.com/company/demo-ielts-academy",
+    handle: "demo-ielts-academy",
   },
   {
     label: "Pinterest",
-    href: "https://www.pinterest.com/ICONEnglishCenter",
-    handle: "ICONEnglishCenter",
+    href: "https://pinterest.com/DemoIELTSAcademy",
+    handle: "DemoIELTSAcademy",
   },
   {
     label: "Threads",
-    href: "https://www.threads.com/@iconenglishcenterbd",
-    handle: "@iconenglishcenterbd",
+    href: "https://threads.net/@demo.ielts.academy",
+    handle: "@demo.ielts.academy",
   },
   {
     label: "Quora",
-    href: "https://bn.quora.com/profile/ICON-English-Center",
-    handle: "ICON-English-Center",
+    href: "https://quora.com/topic/Demo-IELTS-Academy",
+    handle: "Demo-IELTS-Academy",
   },
 ];
 
 export const STATS = [
-  { value: 8500, suffix: "+", label: "Facebook followers" },
-  { value: 59, suffix: "+", label: "Free video lessons" },
-  { value: 8, suffix: "", label: "IELTS band score targets" },
-  { value: 34000, suffix: "+", label: "YouTube views" },
+  { value: 10000, suffix: "+", label: "Demo community members" },
+  { value: 50, suffix: "+", label: "Demo video lessons" },
+  { value: 8, suffix: "", label: "Target band score" },
+  { value: 25000, suffix: "+", label: "Demo lesson views" },
 ] as const;
 
 /* ------------------------------------------------------------------ */
@@ -478,43 +478,43 @@ export const LESSON_CATEGORIES = [
 
 export const TESTIMONIALS: Testimonial[] = [
   {
-    name: "Nusrat Jahan",
-    role: "Student · University of Dhaka",
+    name: "Demo Candidate A",
+    role: "Demo Student · University Dept",
     avatar: "/images/avatar-1.png",
     from: "Band 5.5",
     to: "Band 7.5",
     quote:
-      "I was stuck at Band 5.5 in Writing for two attempts. ICON's Task 2 formula and the personal feedback on every essay changed everything — I finally understood what the examiner wants.",
+      "I was stuck at Band 5.5 in Writing for two attempts. The Task 2 formula and personal feedback on every essay changed everything — I finally understood what the examiner wants.",
     course: "IELTS Full Course",
   },
   {
-    name: "Tanvir Ahmed",
-    role: "IELTS Candidate · Chattogram",
+    name: "Demo Candidate B",
+    role: "Demo Candidate · Chattogram Campus",
     avatar: "/images/avatar-2.png",
     from: "Band 6.0",
     to: "Band 8.0",
     quote:
-      "The crash course is no joke. 30 days of focused practice, daily targets and mock tests under real pressure. My Reading went from 6 to 8.5 just from the time-management techniques.",
+      "The crash course is focused practice. 30 days of daily targets and mock tests under real pressure. My Reading went from 6 to 8.5 just from the time-management techniques.",
     course: "IELTS Crash Course",
   },
   {
-    name: "Sadia Islam",
-    role: "MBA Applicant",
+    name: "Demo Candidate C",
+    role: "Demo Applicant · Graduate Track",
     avatar: "/images/avatar-3.png",
     from: "Band 6.5",
     to: "Band 8.0",
     quote:
-      "Speaking was my biggest fear — I would freeze. The speaking club and Band 5 vs Band 9 answer demos rewired how I respond. I scored 8.0 in Speaking in my first attempt.",
+      "Speaking was my biggest hurdle. The speaking club and answer demos rewired how I respond. I scored 8.0 in Speaking in my first attempt.",
     course: "Spoken English Mastery",
   },
   {
-    name: "Rakib Hasan",
-    role: "Engineer · Job seeker",
+    name: "Demo Candidate D",
+    role: "Demo Engineer · Professional Track",
     avatar: "/images/avatar-4.png",
     from: "Band 5.0",
     to: "Band 7.0",
     quote:
-      "Grammar was my weakest point since school. The Free Grammar Fix series pulled me in, and the foundation course rebuilt my basics. Everything clicked after that.",
+      "Grammar was my weakest point. The demo grammar series pulled me in, and the foundation course rebuilt my basics. Everything clicked after that.",
     course: "English Foundation",
   },
 ];
@@ -547,7 +547,7 @@ export const FAQS = [
 ];
 
 /* ------------------------------------------------------------------ */
-/*  Why ICON                                                           */
+/*  Why Demo Academy                                                   */
 /* ------------------------------------------------------------------ */
 
 export const WHY_ICON = [
@@ -577,9 +577,9 @@ export const WHY_ICON = [
       "Strict timing, real answer sheets, exam-hall conditions — so the actual test day feels like just another Saturday.",
   },
   {
-    title: "A community of 8,500+ learners",
+    title: "A community of 10,000+ demo learners",
     description:
-      "Daily motivation, answer-sharing and doubt-solving in the largest Bengali-first IELTS community we know of.",
+      "Daily motivation, answer-sharing and doubt-solving in our dedicated IELTS preparation community.",
   },
 ] as const;
 

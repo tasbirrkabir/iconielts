@@ -27,7 +27,7 @@ const PRINCIPLES = [
   {
     en: "No blind practice",
     bn: "অন্ধ অনুশীলন নয়",
-    body: "Writing ten essays nobody reads is rehearsal for failure. Every script submitted at ICON is checked against the real band descriptors and returned with notes you can act on.",
+    body: "Writing ten essays nobody reads is rehearsal for failure. Every script submitted at Demo Academy is checked against the real band descriptors and returned with notes you can act on.",
   },
   {
     en: "Mock pressure before real pressure",
@@ -44,9 +44,9 @@ const PRINCIPLES = [
 const FACULTY = [
   {
     image: "/images/teacher-1.png",
-    name: "Md. Rafiqul Islam",
+    name: "Demo Instructor One",
     role: "Senior IELTS Instructor — Writing & Reading",
-    bio: "The teacher students quote back to each other. Runs the Saturday grammar clinic and the writing feedback desk; believes every Task 2 essay has a skeleton you can learn in a week.",
+    bio: "Experienced lead faculty member for test strategy and analysis. Runs the weekend grammar clinic and writing feedback desk; believes every Task 2 essay has a formula you can learn in a week.",
     details: [
       { label: "Teaches", value: "Writing Task 1 & 2 · Reading" },
       { label: "Known for", value: "The 7-minute Task 2 formula" },
@@ -55,9 +55,9 @@ const FACULTY = [
   },
   {
     image: "/images/teacher-2.png",
-    name: "Farhana Rahman",
+    name: "Demo Instructor Two",
     role: "Speaking & Listening Lead",
-    bio: "Runs the speaking club where the fear dies. Trains candidates on Part 1–3 frameworks, Band 5 vs Band 9 answer modelling, and the accent-decoding drills for Listening.",
+    bio: "Heads the speaking sessions and fluency workshops. Trains candidates on Part 1–3 frameworks, Band 5 vs Band 9 answer modelling, and accent-decoding drills for Listening.",
     details: [
       { label: "Teaches", value: "Speaking · Listening" },
       { label: "Known for", value: "Mock interviews under real timing" },
@@ -84,19 +84,19 @@ export function AboutPage({
   return (
     <>
       <PageHead
-        eyebrow="About ICON"
+        eyebrow="About Demo Academy"
         title={
           <>
             A classroom built for the way Bangladesh{" "}
             <em className="italic text-brand">actually</em> learns.
           </>
         }
-        lede="ICON English Center began with a simple refusal: we stopped pretending that a Dhaka student and a London student need the same explanation."
+        lede="Demo IELTS Academy began with a simple refusal: we stopped pretending that a Dhaka student and a London student need the same explanation."
         meta={[
           { label: "Base", value: "Dhaka, Bangladesh" },
           { label: "Focus", value: "IELTS in Bangla" },
-          { label: "Community", value: "8,500+ learners" },
-          { label: "Open lessons", value: "59+ videos" },
+          { label: "Community", value: "10,000+ learners" },
+          { label: "Open lessons", value: "50+ videos" },
         ]}
       />
 
@@ -150,11 +150,11 @@ function Story() {
                 was never a knowledge problem — it was a system problem.
               </p>
               <p>
-                So ICON was built as the opposite of studying alone. A daily
+                So Demo Academy was built as the opposite of studying alone. A daily
                 grammar fix on Facebook became a YouTube channel of
                 full-length classes, and the channel became a community of{" "}
                 <strong className="font-semibold text-ink">
-                  8,500+ learners
+                  10,000+ demo learners
                 </strong>{" "}
                 who tag each other in vocabulary posts at 1 a.m. We kept it
                 free because education that actually reaches people
@@ -169,7 +169,7 @@ function Story() {
                 them breaks. Just not all at once, and not alone.”
               </p>
               <cite className="mt-3 block text-[11px] font-semibold uppercase not-italic tracking-[0.18em] text-ink-faint">
-                — The ICON teaching note, batch one
+                — The Demo Academy teaching note, batch one
               </cite>
             </blockquote>
           </Reveal>
@@ -179,7 +179,7 @@ function Story() {
           <Reveal delay={0.1}>
             <Figure
               src="/images/about-story.png"
-              alt="An ICON English Center instructor explaining grammar at the whiteboard"
+              alt="A Demo IELTS Academy instructor explaining grammar at the whiteboard"
               ratio="aspect-[4/3]"
               caption="Grammar clinic — Saturday batch, Dhaka"
             />
@@ -227,7 +227,7 @@ function Principles() {
               <em className="italic text-brand">zero</em> exceptions.
             </>
           }
-          lede="Every batch, every teacher, every lesson at ICON answers to these four lines. If a class ever breaks one, students are asked to call it out."
+          lede="Every batch, every teacher, every lesson at Demo Academy answers to these four lines. If a class ever breaks one, students are asked to call it out."
         />
         <div className="mt-14 grid gap-x-16 gap-y-12 sm:grid-cols-2">
           {PRINCIPLES.map((p, i) => (
@@ -335,7 +335,7 @@ function WeeklyRhythm() {
           eyebrow="How a batch runs"
           title={
             <>
-              One week at ICON, on <em className="italic">repeat.</em>
+              One week at Demo Academy, on <em className="italic">repeat.</em>
             </>
           }
           lede="The rhythm barely changes — that's the point. IELTS rewards the students whose preparation looks boring from the outside."
@@ -423,7 +423,7 @@ function Community() {
           />
           <ArrowLink
             label="Watch on YouTube"
-            href="https://www.youtube.com/@ICONEnglishCenterBD"
+            href="https://youtube.com/@DemoIELTSAcademy"
             className="shrink-0 pb-1"
           />
         </div>

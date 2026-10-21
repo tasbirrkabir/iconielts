@@ -53,9 +53,9 @@ export function SuccessPage({
           <Reveal>
             <Figure
               src="/images/success-wall.png"
-              alt="ICON English Center students celebrating their IELTS results with certificates"
+              alt="Demo IELTS Academy students celebrating their IELTS results with certificates"
               ratio="aspect-[16/8]"
-              caption="Results day — certificates, confetti, and the group chat finally going quiet."
+              caption="Results day — demo certificates and student score celebrations."
             />
           </Reveal>
           <div className="mt-14 grid grid-cols-2 gap-y-10 md:grid-cols-4 md:gap-4">
